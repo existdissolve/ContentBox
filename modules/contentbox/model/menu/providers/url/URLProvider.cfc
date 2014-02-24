@@ -26,6 +26,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     property name="name" type="string";
     property name="entityName" type="string";
     property name="type" type="string";
+    property name="iconCls" type="string";
     property name="description" type="string";
     property name="renderer" inject="provider:ColdBoxRenderer";
 
@@ -35,6 +36,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     public URLProvider function init() {
         setName( "URL" );
         setType( "URL" );
+        setIconCls( "icon-link" );
         setEntityName( "cbURLMenuItem" );
         setDescription( "A menu item to a URL" );
         return this;
@@ -58,6 +60,13 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
      */
     public string function getType() {
         return type;
+    }
+
+    /**
+     * Gets the iconCls of the menu item provider
+     */
+    public string function getIconCls() {
+        return iconCls;
     }
 
     /**

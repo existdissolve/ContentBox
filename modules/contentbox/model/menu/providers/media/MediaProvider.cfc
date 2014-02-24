@@ -26,7 +26,10 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     property name="name" type="string";
     property name="entityName" type="string";
     property name="type" type="string";
+    property name="iconCls" type="string";
     property name="description" type="string";
+    property name="renderer" inject="provider:ColdBoxRenderer";
+    property name="CBHelper" inject="id:CBHelper@cb";
 
     /**
      * Constructor
@@ -34,6 +37,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     public MediaProvider function init() {
         setName( "Media" );
         setType( "Media" );
+        setIconCls( "icon-picture" );
         setEntityName( "cbMediaMenuItem" );
         setDescription( "A menu item to a media item" );
         return this;
@@ -60,10 +64,25 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     }
 
     /**
+     * Gets the iconCls of the menu item provider
+     */
+    public string function getIconCls() {
+        return iconCls;
+    }
+
+    /**
      * Retrieves template for use in admin screens for this type of menu item provider
      */ 
     public string function getAdminTemplate( required any menuItem, any event ) {
-        return "hello";
+        var args = { 
+            menuItem=arguments.menuItem,
+            xehMediaSelector= "#event.buildLink( linkTo='cbadmin.menus.filebrowser' )#"
+        };
+        return renderer.get().renderExternalView( 
+            view="contentbox/model/menu/providers/media/admin", 
+            module="contentbox",
+            args = args
+        );
     }
 
     /**

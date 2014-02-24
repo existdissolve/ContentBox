@@ -6,6 +6,7 @@ component extends="baseHandler" {
     // Dependencies
     property name="menuService"     inject="id:menuService@cb";
     property name="menuItemService" inject="id:menuItemService@cb";
+    property name="settingService" inject="id:settingService@cb";
     
     // Public properties
     this.preHandler_except = "pager";
@@ -39,6 +40,19 @@ component extends="baseHandler" {
         event.setView( "menus/index" );
     }
 
+    function filebrowser( required any event, required struct rc, required struct prc ) {
+        prc.defaultEvent = "contentbox-filebrowser:home.index";
+        // CKEditor callback
+        rc.callback="fbMenuItemSelect";
+        // get settings according to contentbox
+        prc.cbSetting = settingService.buildFileBrowserSettings();
+        // load jquery as it is standalone
+        prc.cbSetting.loadJQuery = true;
+
+        var args = { widget=true, settings=prc.cbSetting };
+        return runEvent( event=prc.defaultEvent, eventArguments=args );
+    }
+
     // editor
     public void function editor( required any event, required struct rc, required struct prc ){
         // get new or persisted
@@ -53,7 +67,7 @@ component extends="baseHandler" {
         prc.providers = menuItemService.getProviders();
         // add assets
         rc.cssAppendList = "nestable";       
-        rc.jsAppendList  = "jquery.nestable";        
+        rc.jsAppendList  = "jquery.nestable,bootstrap-confirmation";        
         // view
         event.setView( "menus/editor" );
     }

@@ -2,35 +2,65 @@
     <!---<cfset addAsset( "#event.getModuleRoot( 'cbMenu' )#/includes/nestable.css" )>
     <cfset addAsset( "#event.getModuleRoot( 'cbMenu' )#/includes/jquery.nestable.js" )>--->
     <script>
-    function addPage() {
-                var nestable = $( '##nestable' );
-                var content = '<li class="dd-item dd3-item" data-id="20"><div class="dd-handle dd3-handle">Drag</div><div class="dd3-content">Item 20</div></li>';
-                nestable.children( 'ol' ).append( content );
-                console.log( content )
+        var confirmConfig = {
+            placement: 'right',
+            title: 'Are you sure you want to remove this menu item and all its descendants?',
+            singleton: true,
+            href: 'javascript:void(0);',
+            onConfirm: function() {
+                $( this ).closest( '.dd3-item' ).remove();
             }
-            function updateLabel( el ) {
-                var me = $( el ),
-                    titleDiv = me.closest( '.dd3-extracontent' ).prev( '.dd3-content' );
-                // toggle 
-                $( titleDiv ).html( me.val() );
+        };
+        function updateLabel( el ) {
+            var me = $( el ),
+                titleDiv = me.closest( '.dd3-extracontent' ).prev( '.dd3-content' ),
+                value = me.val() != '' ? me.val() : '<i class="emptytext">Please enter a label</i>';
+            // toggle 
+            $( titleDiv ).html( value );
+        }
+        function addMenuItem( content, context ) {
+            var wrapper = $( '##nestable' ),
+                outer = wrapper.children( 'ol' );
+            // if a context isn't defined, add to outer element
+            if( !context ) {
+                $( content ).appendTo( outer ).each(function() {
+                    var extra = $( this ).find( '.dd3-extracontent' );
+                    extra.toggle( 300 );
+                    extra.find( 'input[name=label]' ).focus();
+                    $( this ).find( '[data-toggle="confirmation"]' ).confirmation( confirmConfig );
+                });
             }
-            function addMenuItem( content, context ) {
-                var wrapper = $( '##nestable' ),
-                    outer = wrapper.children( 'ol' );
-                // if a context isn't defined, add to outer element
-                if( !context ) {
-                    $( content ).appendTo( outer ).each(function() {
-                        var extra = $( this ).find( '.dd3-extracontent' );
-                        extra.toggle( 300 );
-                        extra.find( 'input[name=label]' ).focus();
-                    });
+            else {
+
+            }
+        }
+        function processItem( input ) {
+            var li = $( input ).closest( 'li' ),
+                fields = $( li ).find( ':input' ),
+                errors =  0;
+            // run over fields with validation
+            for( var i=0; i<fields.length; i++ ) {
+                var fld = $( fields[ i ] );
+                if( fld.valid() ) {
+                    li.data( fld.attr( 'name' ), fld.val() );
                 }
                 else {
-
+                    errors++;
                 }
             }
+            li.data( 'isValid', errors ? false : true );
+        }
+        function saveMenu() {
+            var form = $( '##menuForm' ),
+                nestable = $( '##nestable' );
+            console.log( nestable.nestable( 'serialize' ) )
+        }
         $( document ).ready(function() {
             //****** setup listeners ********//
+            $( '##submitMenu' ).on( 'click', function() {
+                saveMenu();
+            });
+            $( '[data-toggle="confirmation"]' ).confirmation( confirmConfig );
             $( '##nestable' ).on('click', '.dd3-expand', function() {
                 var me = $( this ),
                     prev = me.prev( '.dd3-extracontent' );
@@ -39,6 +69,9 @@
             });
             $( '##nestable' ).on('keyup change focus blur', 'input[name=label]', function() {
                 updateLabel( this );
+            });
+            $( '##nestable' ).on('keyup change focus blur', 'input', function() {
+                processItem( this );
             });
 
             // provider buttons
@@ -53,65 +86,7 @@
                     }
                 })
             });
-            
-            // collapsible menu panels
-            $( '.collapsible_title' ).live('click', function(){
-                $( this ).next().slideToggle();
-            });
-            // collapsible side panels
-            $( '.panel_header' ).click(function() {
-                $( this ).next().slideToggle( 'fast' );
-            })
-            // add pages widget
-            $( '##page_adder' ).click(function(){
-                addPages( 'page' );
-            });
-            // add blog posts widget
-            $( '##blog_adder' ).click(function(){
-                addPages( 'blog' );
-            });
-            // add links widget
-            $( '##link_adder' ).click(function(){
-                var slug = $( '##customlink_slug' ).val();
-                if( $( '##customlink_slug' ).val()=='http://' || $( '##customlink_slug' ).val()=='' ) {
-                    apprise( 'You should enter a real URL for your custom link ;)', {});
-                    return false;
-                }
-                if( $( '##customlink_title' ).val()=='' ) {
-                    apprise( 'Please enter a labels for your custom link!', {});
-                    return false;
-                }
-                var uuid = jQuery.guid++;
-                var data = {
-                    id:   uuid,
-                    title:$( '##customlink_title' ).val(),                                    
-                    url:  $( '##customlink_url' ).val(),
-                    type: $( '##customlink_type' ).val()  
-                };
-                addLink( data ); 
-            });
-            // form buttons
-            $( '##save_menu' ).click(function(){
-                saveMenu(); 
-            });
-            $( '##delete_menu' ).click(function(){
-                deleteMenu();
-            })
-            // option selector
-            $( '##menu_selector' ).change(function() {
-                window.location= $( '##menu_selector option:selected' ).val();
-            })
-            // remove links
-            $( '.removal a' ).live('click', function(){
-                var me = this;
-                $( this ).parent( 'div' ).parent( 'div' ).parent( 'div' ).parent( 'li' ).slideToggle(
-                    'slow',
-                    function() {
-                        $( this ).remove();
-                    }
-                );
-            });
-            //******** setup sortable menu items **************//
+            //******** setup nestable menu items **************//
             $( '##nestable' ).nestable();
             
             //************* helper functions ***********//
@@ -119,7 +94,7 @@
             /**
              * gets a hierarchical json representation of the menus
              */
-            function getMenu() {
+            function getMenu1() {
                 var hierarchy = $('.sortable').nestedSortable( 'toHierarchy' );
                 console.log( hierarchy )
                 console.log( $.quoteString( $.toJSON( hierarchy ) ) );
@@ -128,7 +103,7 @@
             /**
              * validates and saves the sortable menu
              */
-            function saveMenu() {
+            function saveMenu1() {
                 var hierarchy = $('.sortable').nestedSortable( 'toHierarchy' );
                 var errors = '';
                 if( $( 'input[name=supermenu_title]' ).val()=='' ) {

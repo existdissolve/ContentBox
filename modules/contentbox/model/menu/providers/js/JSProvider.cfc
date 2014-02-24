@@ -26,6 +26,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     property name="name" type="string";
     property name="entityName" type="string";
     property name="type" type="string";
+    property name="iconCls" type="string";
     property name="description" type="string";
     property name="renderer" inject="provider:ColdBoxRenderer";
 
@@ -35,6 +36,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     public JSProvider function init() {
         setName( "JS" );
         setType( "JS" );
+        setIconCls( "icon-code" );
         setEntityName( "cbJSMenuItem" );
         setDescription( "A menu item which executes JavaScript code" );
         return this;
@@ -58,6 +60,13 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
      */
     public string function getType() {
         return type;
+    }
+
+    /**
+     * Gets the iconCls of the menu item provider
+     */
+    public string function getIconCls() {
+        return iconCls;
     }
 
     /**

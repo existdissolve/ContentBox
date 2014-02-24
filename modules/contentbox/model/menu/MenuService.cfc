@@ -206,11 +206,12 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
             if( !skipItem ) {
                 menuString &= '<li id="key_#item.getMenuItemID()#" class="dd-item dd3-item" data-id="#item.getMenuItemID()#">';
                 // render default menu item
+                var args = { menuItem=item, provider=item.getProvider() };
                 savecontent variable="providerContent" {
                     writeOutput( renderer.get().renderView( 
                         view="menus/provider", 
                         module="contentbox-admin",
-                        args = { menuItem=item, provider=item.getProvider() }
+                        args = args
                     ));
                 };
                 menuString &= providerContent;

@@ -1,26 +1,12 @@
 <cfoutput>
-    <div class="dd-handle dd3-handle">Drag</div>
-    <div class="dd3-type">Type</div>
-    <!---<cfif args.menuItem.hasChild() >
-        <button data-action="collapse" type="button" style="display: none;">Collapse</button>
-        <button data-action="expand" type="button" style="display: block;">Expand</button>
-    </cfif>--->
+    <div class="dd-handle dd3-handle" title="Drag to reorder"><i class="icon-move icon-large"></i></div>
+    <div class="dd3-type" title="#args.provider.getDescription()#"><i class="#args.provider.getIconCls()#"></i></div>
     <div class="dd3-content double">#args.menuItem.getLabel()#</div>
     <div class="dd3-extracontent" style="display:none;">
-
-        <!---<div id="modalContent">
-            <div class="modal-header">
-                <i class="icon-tags icon-large"></i>
-                Create #rc.type# Menu Item
-            </div>
-            <div class="modal-body">
-                <!--- Body --->
-                <!---here are the default fields that we need for every menu item--->
-                <h3>Menu Meta</h3>--->
-                <!--- id --->
-                #html.hiddenField( name="menuItemID", bind=args.menuItem )#  
-                <div class="row-fluid">
-                <span class="span6">
+        <!--- id --->
+        #html.hiddenField( name="menuItemID", bind=args.menuItem )#  
+        <div class="row-fluid">
+            <span class="span6">
                 #html.textfield(
                     label="Label:",
                     name="label",
@@ -44,8 +30,8 @@
                     labelClass="control-label",
                     groupWrapper="div class=control-group"
                 )#
-                </span>
-                <span class="span6">
+            </span>
+            <span class="span6">
                 <!--- title --->
                 #html.textfield(
                     label="Title:",
@@ -70,20 +56,16 @@
                     labelClass="control-label",
                     groupWrapper="div class=control-group"
                 )#
-                </span>
-                </div>
-                <div class="row-fluid">
-                <!---End default fields--->
+            </span>
+        </div>
+        <div class="row-fluid">
+        <!---End default fields--->
 
-                <!---do provider thing--->
-                #args.provider.getAdminTemplate( menuItem=args.menuItem, event=event )#
-                </div>
-                <!---end provider thing--->
-            <!---</div>
-            <div class="modal-footer">
-                #html.resetButton( name="btnReset", value="Cancel", class="btn", onclick="closeRemoteModal()" )#
-                #html.submitButton( name="btnSave", value="Add Menu Item", class="btn btn-danger" )#
-            </div>--->
+        <!---do provider thing--->
+        #args.provider.getAdminTemplate( menuItem=args.menuItem, event=event )#
+        </div>
+        <!---end provider thing--->
     </div>
-    <div class="dd3-expand"><i class="icon-edit icon-large"></i></div>
+    <div class="dd3-expand" title="Edit Details"><i class="icon-edit icon-large"></i></div>
+    <div class="dd3-delete" data-toggle="confirmation" data-title="Are you sure you want to remove this menu item and all its descendants?"><i class="icon-trash icon-large"></i></div>
 </cfoutput>

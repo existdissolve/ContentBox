@@ -105,10 +105,7 @@
 
 .dd3-item > button { margin-left: 30px;margin-left:60px; }
 
-.dd3-handle {
-    border-right: 1px solid #bbb;
-}
-.dd3-handle, .dd3-type, .dd3-expand { position: absolute; margin: 0; left: 0; top: 0; cursor: pointer; width: 30px; text-indent: 100%; white-space: nowrap; overflow: hidden;
+.dd3-handle, .dd3-type, .dd3-expand, .dd3-delete { position: absolute; margin: 0; left: 0; top: 0; cursor: pointer; width: 30px; text-indent: 100%; white-space: nowrap; overflow: hidden;
     border: 1px solid #aaa;
     background: #ddd;
     background: -webkit-linear-gradient(top, #ddd 0%, #bbb 100%);
@@ -118,6 +115,11 @@
     border-bottom-right-radius: 0;
 }
 .dd3-expand {
+    right: 30px;
+    left: inherit;
+    border-right:none;
+}
+.dd3-delete {
     right: 0;
     left: inherit;
     border-top-left-radius: 0;
@@ -135,19 +137,32 @@
     background:         linear-gradient(top, #efefef 0%, #ddd 100%);
     cursor: inherit;
 }
-.dd3-expand, .dd3-type {
-    display: block; height: 30px; margin: 5px 0; padding: 5px 10px; color: #fafafa; text-decoration: none; font-weight: bold; border: 1px solid #ccc;
+.dd3-expand, .dd3-type, .dd3-delete, .dd3-handle{
+    display: block; height: 30px; margin: 5px 0; padding: 5px 10px; color: #fafafa; text-decoration: none; font-weight: bold;
     box-sizing: border-box; -moz-box-sizing: border-box;
     margin-top: 0;
     padding: 0px 11px;
 }
-.dd-list [class^="icon-"], .dd-list [class*=" icon-"] {
+.dd3-handle {
+    border-right: 1px solid #bbb;
+    color: #555 !important;
+}
+.dd3-expand [class^="icon-"], .dd3-expand [class*=" icon-"],
+.dd3-handle [class^="icon-"], .dd3-handle [class*=" icon-"],
+.dd3-delete [class^="icon-"], .dd3-delete [class*=" icon-"],
+.dd3-type [class^="icon-"], .dd3-type [class*=" icon-"]  {
     position: absolute;
     left: 0;
     top: 5px;
     width: 0px;
 }
-.dd3-handle:before { content: '≡'; display: block; position: absolute; left: 0; top: 3px; width: 100%; text-align: center; text-indent: 0; color: #fff; font-size: 20px; font-weight: normal; }
+.dd3-type [class^="icon-"], .dd3-type [class*=" icon-"] {
+    top: 8px;
+    color: #999;
+    left: 1px;
+}
+/*.dd3-handle:before { content: 'f047'; display: block; position: absolute; left: 0; top: 3px; width: 100%; text-align: center; text-indent: 0; color: #fff; font-size: 20px; font-weight: normal; }
+*/
 .dd3-handle:hover, .dd3-expand:hover { background: #ddd; }
 .dd3-extracontent {
     border: solid 1px #ccc;
@@ -157,3 +172,4 @@
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;
 }
+i.emptytext {color: #999;font-weight: normal;}

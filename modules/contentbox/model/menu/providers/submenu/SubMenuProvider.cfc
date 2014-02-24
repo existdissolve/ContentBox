@@ -26,6 +26,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     property name="name" type="string";
     property name="entityName" type="string";
     property name="type" type="string";
+    property name="iconCls" type="string";
     property name="description" type="string";
     property name="renderer" inject="provider:ColdBoxRenderer";
     property name="menuService" inject="id:menuService@cb";
@@ -36,6 +37,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     public SubMenuProvider function init() {
         setName( "SubMenu" );
         setType( "SubMenu" );
+        setIconCls( "icon-sort-by-attributes-alt" );
         setEntityName( "cbSubMenuItem" );
         setDescription( "A menu item which encapsulates another menu" );
         return this;
@@ -59,6 +61,13 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
      */
     public string function getType() {
         return type;
+    }
+
+    /**
+     * Gets the iconCls of the menu item provider
+     */
+    public string function getIconCls() {
+        return iconCls;
     }
 
     /**
