@@ -7,6 +7,7 @@ component persistent="true" entityName="cbMenuItem" table="cb_menuItem" cachenam
     property name="label"   notnull="false" ormtype="string" length="200" default="";
     property name="cls"     notnull="false" ormtype="string" length="200" default="";
     property name="data"    notnull="false" ormtype="string" default="";
+    property name="menuType" insert="false" update="false";
     // M20 - Owning menu
     property name="menu" cfc="contentbox.model.menu.Menu" fieldtype="many-to-one" fkcolumn="FK_menuID" lazy="true" fetch="join" notnull="true";
     // M20 - Parent Menu item
@@ -31,7 +32,6 @@ component persistent="true" entityName="cbMenuItem" table="cb_menuItem" cachenam
     public struct function getMemento(){
         var pList = menuItemService.getPropertyNames();
         var result = {};
-        
         // Do simple properties only
         for(var x=1; x lte arrayLen( pList ); x++ ){
             if( structKeyExists( variables, pList[ x ] ) ){
@@ -43,23 +43,18 @@ component persistent="true" entityName="cbMenuItem" table="cb_menuItem" cachenam
                 result[ pList[ x ] ] = "";
             }
         }
-        // Parent
-        if( hasParent() ){
-            result[ "parent" ] = {
-                menuID = getParent().getmenuID(),
-                slug = getParent().getSlug(),
-                title = getParent().getTitle()
-            };
-        }
+        // add contentType
+        result[ "menuType" ] = getMenuType();
+        // set empty children
+        result[ "children" ] = [];
+        // remove parent...we'll rationalize the relationships via "children"
+        structDelete( result, "parent" );
         // Children
         if( hasChild() ){
             result[ "children" ] = [];
             for( var thisChild in variables.children ){
                 arrayAppend( result[ "children" ], thisChild.getMemento() );    
             }
-        }
-        else{
-            result[ "children" ] = [];
         }
         return result;
     }

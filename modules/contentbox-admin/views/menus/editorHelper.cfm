@@ -1,4 +1,7 @@
  <cfoutput>
+    <style>
+        .dd { width:75%; }
+    </style>
     <script>
         var confirmConfig = {
             placement: 'right',
@@ -9,6 +12,48 @@
                 $( this ).closest( '.dd3-item' ).remove();
             }
         };
+        // Create Slug
+        function createSlug( linkToUse ){
+            var linkToUse = ( typeof linkToUse === "undefined" ) ? $( "##title" ).val() : linkToUse,
+                $slug = $( '##slug' );
+            if( !linkToUse.length ){ 
+                return; 
+            }
+            toggleSlug()
+            $.get( '#event.buildLink( prc.xehSlugify )#', { slug : linkToUse }, function( data ){
+                $slug.val( data );
+                slugUniqueCheck();
+                toggleSlug();
+            });
+        }
+
+        //disable or enable (toggle) slug field
+        function toggleSlug(){
+            var toggle = $( '##toggleSlug' ),
+                $slug = $( '##slug' );
+            // Toggle lock icon on click..  
+            toggle.hasClass( 'icon-lock' ) ? toggle.attr( 'class', 'icon-unlock' ) : toggle.attr( 'class', 'icon-lock' );
+            //disable input field
+            $slug.prop( "disabled", !$slug.prop( 'disabled' ) );
+        }
+
+        function slugUniqueCheck( linkToUse ){
+            var $slug = $( '##slug' ),
+                linkToUse = ( typeof linkToUse === "undefined" ) ? $slug.val() : linkToUse;
+            linkToUse = $.trim( linkToUse ); //slugify still appends a space at the end of the string, so trim here for check uniqueness    
+            if( !linkToUse.length ){ 
+                return; 
+            }
+            // Verify unique
+            $.getJSON( '#event.buildLink( prc.xehSlugCheck )#', { slug:linkToUse, menuID: $( '##menuID' ).val() }, function( data ){
+                if( !data.UNIQUE ){
+                    $( '##slugCheckErrors' ).html('The menu slug you entered is already in use, please enter another one or modify it.').addClass( 'alert' );
+                }
+                else{
+                    $( '##slugCheckErrors' ).html( '' ).removeClass( 'alert' );
+                }
+            } );
+        }
         /**
          * Updates label of menu item when label is changed in form
          * @param {HTMLElement} el The DOM element of the label field
@@ -94,6 +139,8 @@
         $( document ).ready(function() {
             //****** setup listeners ********//
             var $contextMenu = $( '##context-menu' );
+            var $title = $( '##menuForm' ).find( "##title" );
+            var $slug = $( '##slug' );
             var $menuItemClicked;
             // hide context menu
             $( document ).click( function() {
@@ -132,9 +179,11 @@
             // setup expand listeners
             $( '##nestable' ).on('click', '.dd3-expand', function() {
                 var me = $( this ),
+                    li = me.closest( 'li' ),
                     prev = me.prev( '.dd3-extracontent' );
+
                 // toggle 
-                prev.toggle( 300 );
+                prev.slideToggle( 200 );
             });
             // add input listeners to update label field
             $( '##nestable' ).on('keyup change focus blur', 'input[name^=label]', function() {
@@ -151,6 +200,20 @@
                         addMenuItem( data );
                     }
                 })
+            });
+            // Activate blur slugify on titles
+
+            // set up live event for title, do nothing if slug is locked..
+            $title.on('blur', function(){
+                if( !$slug.prop( 'disabled' ) ){
+                    createSlug( $title.val() );
+                }
+            });
+            // Activate permalink blur
+            $slug.on('blur',function(){
+                if( !$( this ).prop( 'disabled' ) ){
+                    slugUniqueCheck();
+                }
             });
             //******** setup nestable menu items **************//
             $( '##nestable' ).nestable();            

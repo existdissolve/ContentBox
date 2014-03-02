@@ -12,7 +12,7 @@ component extends="baseHandler" {
     this.preHandler_except = "pager";
 
     // pre handler
-    function preHandler(event,action,eventArguments){
+    public void function preHandler(event,action,eventArguments){
         var rc  = event.getCollection();
         var prc = event.getCollection(private=true);
         // exit Handlers
@@ -24,7 +24,7 @@ component extends="baseHandler" {
     }
     
     // index
-    function index( required any event, required struct rc, required struct prc ){
+    public void function index( required any event, required struct rc, required struct prc ){
         // exit Handlers
         prc.xehMenuSave   = "#prc.cbAdminEntryPoint#.menus.save";
         prc.xehMenuExportAll= "#prc.cbAdminEntryPoint#.menus.exportAll";
@@ -40,7 +40,7 @@ component extends="baseHandler" {
         event.setView( "menus/index" );
     }
 
-    function filebrowser( required any event, required struct rc, required struct prc ) {
+    public void function filebrowser( required any event, required struct rc, required struct prc ) {
         prc.defaultEvent = "contentbox-filebrowser:home.index";
         // CKEditor callback
         rc.callback="fbMenuItemSelect";
@@ -53,14 +53,41 @@ component extends="baseHandler" {
         return runEvent( event=prc.defaultEvent, eventArguments=args );
     }
 
+    // slugify remotely
+    public void function slugify( required any event, required struct rc, required struct prc ){
+        event.renderData( data=trim( getPlugin( "HTMLHelper" ).slugify( rc.slug ) ),type="plain" );
+    }
+    
+    public void function slugUnique( required any event, required struct rc, required struct prc ){
+        // Params
+        event.paramValue( "slug", "" );
+        event.paramValue( "menuID", "" );
+        // set default data result
+        var data = {
+            "UNIQUE" = false
+        };
+        // check slug if something is passed in
+        if( len( rc.slug ) ){
+            data[ "UNIQUE" ] = menuService.isSlugUnique( trim( rc.slug ), trim( rc.menuID ) );
+        }
+        // render result
+        event.renderData(data=data, type="json");
+    }
+
     // editor
     public void function editor( required any event, required struct rc, required struct prc ){
         // get new or persisted
-        prc.menu  = menuService.get( event.getValue( "menuID", 0 ) );                       
-        prc.menuItems = menuService.buildEditableMenu( prc.menu.getMenuItems() );
+        prc.menuItems = "";
+        prc.menu  = menuService.get( event.getValue( "menuID", 0 ) );   
+        if( prc.menu.isLoaded() ) {
+            prc.menuItems = menuService.buildEditableMenu( prc.menu.getMenuItems() );
+        }       
+        
         // exit handlers
         prc.xehMenuSave   = "#prc.cbAdminEntryPoint#.menus.save";
         prc.xehMenuItem   = "#prc.cbAdminEntryPoint#.menus.createMenuItem";
+        prc.xehSlugify          = "#prc.cbAdminEntryPoint#.menus.slugify";
+        prc.xehSlugCheck        = "#prc.cbAdminEntryPoint#.menus.slugUnique";
         // Tab
         prc.tabContent = true;
         // get registered providers
@@ -91,7 +118,7 @@ component extends="baseHandler" {
     }
 
     // menuTable
-    function menuTable( event, rc, prc ){
+    public void function menuTable( event, rc, prc ){
         // params
         event.paramValue("page",1);
         event.paramValue("searchContent","");
@@ -116,23 +143,27 @@ component extends="baseHandler" {
         prc.menuCount = results.count;
 
         // exit handlers
-        prc.xehMenuSearch        = "#prc.cbAdminEntryPoint#.contentStore";
-        prc.xehMenuExport        = "#prc.cbAdminEntryPoint#.contentStore.export";        
+        prc.xehMenuSearch        = "#prc.cbAdminEntryPoint#.menus";
+        prc.xehMenuExport        = "#prc.cbAdminEntryPoint#.menus.export";        
         // view
         event.setView(view="menus/indexTable", layout="ajax");
     }
 
     // save
     public void function save( required any event, required struct rc, required struct prc ){
+        event.paramValue( "slug", "" );
         // slugify if not passed, and allow passed slugs to be saved as-is
         if( !len( rc.slug ) ) { 
             rc.slug = getPlugin( "HTMLHelper" ).slugify( rc.title ); 
         }
-        
+        var Menu = menuService.get( id=rc.menuID );
+        var originalSlug = menu.getSlug();
         // populate and get menu
-        var Menu = populateModel( model=menuService.get( id=rc.menuID ), exclude="menuItems" );
+        populateModel( model=Menu, exclude="menuItems" );
         // clear menu items
-        arrayClear( Menu.getMenuItems() );
+        if( Menu.hasMenuItem() ) {
+            Menu.getMenuItems().clear();
+        }
         // populate items from form
         var items = Menu.populateMenuItems( rawData=deserializeJSON( rc.menuItems ) );
         for( var item in items ) {
@@ -141,7 +172,7 @@ component extends="baseHandler" {
         // announce event
         announceInterception( "cbadmin_preMenuSave", { menu=Menu, menuID=rc.menuID } );
         // save menu
-        menuService.save( Menu );
+        menuService.saveMenu( menu=Menu, originalSlug=originalSlug );
         // announce event
         announceInterception( "cbadmin_postMenuSave", { menu=Menu } );
         // messagebox
@@ -188,6 +219,31 @@ component extends="baseHandler" {
         // messagebox
         getPlugin( "MessageBox" ).info(messageArray=messages);
         setNextEvent( prc.xehMenus );
+    }
+
+    // Export menu
+    public void function export( required any event, required struct rc, required struct prc ){
+        event.paramValue("format", "json");
+        // get page
+        prc.menu  = menuService.get( event.getValue( "menuID", 0 ) );
+        
+        // relocate if not existent
+        if( !prc.menu.isLoaded() ){
+            getPlugin( "MessageBox" ).warn( "MenuID sent is not valid" );
+            setNextEvent( "#prc.cbAdminEntryPoint#.menus" );
+        }
+        
+        switch( rc.format ){
+            case "xml" : case "json" : {
+                var filename = "#prc.menu.getSlug()#." & ( rc.format eq "xml" ? "xml" : "json" );
+                event.renderData( data=prc.menu.getMemento(), type=rc.format, xmlRootName="menu" )
+                    .setHTTPHeader( name="Content-Disposition", value=" attachment; filename=#fileName#" ); 
+                break;
+            }
+            default:{
+                event.renderData( data="Invalid export type: #rc.format#" );
+            }
+        }
     }
 
     // export all menus

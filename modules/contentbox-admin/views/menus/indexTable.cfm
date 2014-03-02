@@ -27,13 +27,40 @@
                 </td>
                 <td>#menu.getSlug()#</td>
                 <td class="center">
-                    <div class="btn-group">
+                    <!---<div class="btn-group">
                         <cfif prc.oAuthor.checkPermission("MENUS_ADMIN")>
                         <!--- Edit Command --->
-                        <li><a href="#event.buildLink(prc.xehMenuEditor)#/menuID/#menu.getMenuID()#"><i class="icon-edit icon-large"></i> Edit</a></li>
+                        <a class="btn" title="Edit Menu" href="#event.buildLink(prc.xehMenuEditor)#/menuID/#menu.getMenuID()#"><i class="icon-edit icon-large"></i> Edit</a>
                         <!--- Delete Command --->
                         <a class="btn" title="Delete Menu" href="javascript:remove('#menu.getmenuID()#', 'menuID')" class="confirmIt" data-title="Delete Menu?"><i class="icon-trash icon-large" id="delete_#menu.getMenuID()#"></i></a>
                         </cfif>
+                    </div>--->
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="##" title="Menu Actions">
+                            <i class="icon-cogs icon-large"></i>
+                        </a>
+                        <ul class="dropdown-menu text-left pull-right">
+                            <cfif prc.oAuthor.checkPermission("MENUS_ADMIN")>
+                                <!--- Delete Command --->
+                                <li>
+                                    <a title="Delete Menu" href="javascript:remove('#menu.getmenuID()#', 'menuID')" class="confirmIt" data-title="Delete Menu?"><i class="icon-trash icon-large" id="delete_#menu.getMenuID()#"></i> Delete</a>
+                                </li>
+                                <!--- Edit Command --->
+                                <li>
+                                    <a title="Edit Menu" href="#event.buildLink( prc.xehMenuEditor )#/menuID/#menu.getMenuID()#"><i class="icon-edit icon-large"></i> Edit</a>
+                                </li>
+                                <cfif prc.oAuthor.checkPermission("TOOLS_EXPORT")>
+                                    <!--- Export --->
+                                    <li class="dropdown-submenu pull-left">
+                                        <a href="##"><i class="icon-download icon-large"></i> Export</a>
+                                        <ul class="dropdown-menu text-left">
+                                            <li><a href="#event.buildLink(linkto=prc.xehMenuExport)#/menuID/#menu.getMenuID()#.json" target="_blank"><i class="icon-code"></i> as JSON</a></li>
+                                            <li><a href="#event.buildLink(linkto=prc.xehMenuExport)#/menuID/#menu.getMenuID()#.xml" target="_blank"><i class="icon-sitemap"></i> as XML</a></li>
+                                        </ul>
+                                    </li>
+                                </cfif>
+                            </cfif>
+                        </ul>
                     </div>
                 </td>
             </tr>

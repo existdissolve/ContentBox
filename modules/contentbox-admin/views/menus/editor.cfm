@@ -5,24 +5,33 @@
         <div class="box">
             <!--- Body Header --->
             <div class="header">
-                <i class="icon-tags icon-large"></i>
+                <i class="icon-sort-by-attributes-alt icon-large"></i>
                 Menu Designer
+                <!--- Quick Actions --->
+                <div class="btn-group pull-right" style="margin-top:5px">
+                    <button class="btn btn-inverse" onclick="window.location.href='#event.buildLink( prc.xehMenus )#';return false;"><i class="icon-reply"></i> Back</button>
+                </div>
             </div>
             <!--- Body --->
-            <div class="body row-fluid">
+            <div class="body">
                 <!--- MessageBox --->
                 #getPlugin( "MessageBox" ).renderit()#
-                <div>
+                <div class="well well-small">
+                    <p>Click any of the options below to insert a new menu item of that type.</p>
                     <cfloop collection="#prc.providers#" item="provider">
-                        <a class="btn btn-small provider" data-provider="#provider#" title="#prc.providers[ provider].getDescription()#">
-                            <i class="#prc.providers[ provider].getIconCls()#"></i> #provider#
-                        </a>
+                        <a class="btn btn-small provider btn-info" data-provider="#provider#"><span style="display:inline-block;" title="#prc.providers[ provider].getDescription()#"><i class="#prc.providers[ provider].getIconCls()#"></i> #provider#</span></a>
                     </cfloop>
                 </div>
-                <div class="dd" id="nestable">
-                    <ol class="dd-list">
-                        #prc.menuItems#
-                    </ol>
+                <h3>Menu Sandbox</h3>
+                <p>
+                    Insert new menu items and then drag-and-drop to get them in the perfect order.
+                </p>
+                <div class="designer well well-small">
+                    <div class="dd" id="nestable">
+                        <ol class="dd-list">
+                            #prc.menuItems#
+                        </ol>
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,7 +52,7 @@
         <!--- Info Box --->
         <div class="small_box">
             <div class="header">
-                <i class="icon-cogs"></i> Actions
+                <i class="icon-cogs"></i> Menu Data
             </div>
             <div class="body">
                 <!--- id --->
@@ -62,7 +71,7 @@
                     labelClass="control-label",
                     groupWrapper="div class=control-group"
                 )#
-                #html.textfield(
+                <!---#html.textfield(
                     label="Slug:",
                     name="slug",
                     bind=prc.menu, 
@@ -73,7 +82,19 @@
                     wrapper="div class=controls",
                     labelClass="control-label",
                     groupWrapper="div class=control-group"
-                )#
+                )#--->
+                <div class="control-group">
+                    <label for="slug" class="control-label">Menu Slug:</label>
+                    <div class="controls">
+                        <div id='slugCheckErrors'></div>
+                        <div class="input-append" style="display:inline">
+                            #html.textfield(name="slug",value=prc.menu.getSlug(),maxlength="100",class="textfield width95",title="The unique slug for this menu", disabled="#prc.menu.isLoaded() ? 'true' : 'false'#")#
+                            <a title="" class="btn" href="javascript:void(0)" onclick="toggleSlug(); return false;" data-original-title="Lock/Unlock Menu Slug">
+                                <i id="toggleSlug" class="icon-#prc.menu.isLoaded() ? 'lock' : 'unlock'#"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 #html.textfield(
                     label="CSS Classes:",
                     name="cls",

@@ -2,4 +2,14 @@ component persistent="true" entityName="cbURLMenuItem" table="cb_menuItem" exten
     property name="url" notnull="false" ormtype="string" default="";
     // DI
     property name="provider" persistent="false" inject="contentbox.model.menu.providers.url.URLProvider";
+
+    /**
+     * Get a flat representation of this menu item
+     */
+    public struct function getMemento(){
+        var result = super.getMemento();
+        // add our subclasses's properties
+        result[ "url" ] = getURL();
+        return result;
+    }
 }

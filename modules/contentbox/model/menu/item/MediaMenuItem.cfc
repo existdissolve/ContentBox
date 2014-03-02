@@ -2,4 +2,14 @@ component persistent="true" entityName="cbMediaMenuItem" table="cb_menuItem" ext
     property name="mediaPath" notnull="false" ormtype="string" default="";
     // DI
     property name="provider" persistent="false" inject="contentbox.model.menu.providers.media.MediaProvider";
+
+    /**
+     * Get a flat representation of this menu item
+     */
+    public struct function getMemento(){
+        var result = super.getMemento();
+        // add our subclasses's properties
+        result[ "mediaPath" ] = getMediaPath();
+        return result;
+    }
 }

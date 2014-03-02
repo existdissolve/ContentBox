@@ -26,6 +26,7 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
     // DI
     property name="populator" inject="wirebox:populator";
     property name="renderer" inject="provider:ColdBoxRenderer";
+    property name="menuItemService" inject="id:menuItemService@cb";
     
     /**
     * Constructor
@@ -37,17 +38,31 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
     }
     
     /**
-     * Save a menu!
-     */
-    function saveAuthor( required menu, boolean transactional=true ){
+    * Save a menu and do necessary updates
+    * @menu.hint The menu to save or update
+    * @originalSlug.hint If an original slug is passed, then we need to update hierarchy slugs.
+    */
+    function saveMenu( required any menu, string originalSlug="" ) transactional{
+
         // Verify uniqueness of slug
         if( !isSlugUnique( slug=arguments.menu.getSlug(), menuID=arguments.menu.getMenuID() ) ){
             // make slug unique
             arguments.menu.setSlug( getUniqueSlugHash( arguments.menu.getSlug() ) );
         }
+        
+        // Save the target menu
+        save( entity=arguments.menu, transactional=false );
 
-        // save entry
-        save( entity=arguments.menu, transactional=arguments.transactional );
+        // Update all affected menuitems if any on slug updates
+        if( structKeyExists( arguments, "originalSlug" ) AND len( arguments.originalSlug ) ){
+            var criteria = menuItemService.newCriteria();
+            var menuItems = criteria.eq( "menuSlug", "#arguments.originalSlug#" ).list();
+            for( var item in menuItems ){
+                item.setMenuSlug( arguments.menu.getSlug() );
+                save( entity=item, transactional=false );
+            }
+        }
+        return this;
     }
     
     /**
@@ -100,11 +115,9 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
     array function getAllForExport(){
         var result = [];
         var data = getAll();
-        
         for( var menu in data ){
             arrayAppend( result, menu.getMemento() );   
         }
-        
         return result;
     }
     
@@ -225,5 +238,29 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
             }
         }
         return menuString;
+    }
+
+    /**
+    * Verify an incoming slug is unique or not
+    * @slug.hint The slug to search for uniqueness
+    * @menuID.hint Limit the search to the passed menuID usually for updates
+    */
+    function isSlugUnique(required any slug, any menuID=""){
+        var c = newCriteria()
+            .isEq( "slug", arguments.slug );
+        
+        if( len( arguments.menuID ) ){
+            c.ne( "menuID", javaCast( "int", arguments.menuID ) );
+        }
+
+        return ( c.count() gt 0 ? false : true );
+    }
+
+    /**
+    * Get a unique slug hash
+    * @slug.hint The slug to unique it
+    */
+    private function getUniqueSlugHash( required string slug ){
+        return "#arguments.slug#-#lcase( left( hash( now() ), 5 ) )#";
     }
 }

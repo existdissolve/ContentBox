@@ -1,6 +1,6 @@
 <cfoutput>
-    <div class="dd-handle dd3-handle" title="Drag to reorder"><i class="icon-move icon-large"></i></div>
-    <div class="dd3-type" title="#args.provider.getDescription()#"><i class="#args.provider.getIconCls()#"></i></div>
+    <a class="dd-handle dd3-handle btn" title="Drag to reorder"><i class="icon-move icon-large"></i></a>
+    <a class="dd3-type btn btn-info" title="#args.provider.getDescription()#"><i class="#args.provider.getIconCls()#"></i></a>
     <div class="dd3-content double" data-toggle="context" data-target="##context-menu">#args.menuItem.getLabel()#</div>
     <div class="dd3-extracontent" style="display:none;">
         <!--- id --->
@@ -71,6 +71,6 @@
         </div>
         <!---end provider thing--->
     </div>
-    <div class="dd3-expand" title="Edit Details"><i class="icon-edit icon-large"></i></div>
-    <div class="dd3-delete" data-toggle="confirmation" data-title="Are you sure you want to remove this menu item and all its descendants?"><i class="icon-trash icon-large"></i></div>
+    <a class="dd3-expand btn" title="Edit Details"><i class="icon-edit icon-large"></i></a>
+    <a class="dd3-delete btn btn-danger" data-toggle="confirmation" data-title="Are you sure you want to remove this menu item and all its descendants?"><i class="icon-trash icon-large"></i></a>
 </cfoutput>

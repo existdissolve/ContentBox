@@ -5,8 +5,8 @@
             <div class="box">
                 <!--- Body Header --->
                 <div class="header">
-                    <i class="icon-hdd icon-large"></i>
-                    Content Store
+                    <i class="icon-sort-by-attributes-alt icon-large"></i>
+                    Menu Manager
                 </div>
                 <!--- Body --->
                 <div class="body">

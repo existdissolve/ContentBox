@@ -28,7 +28,13 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
     }
 
     /************************************** PUBLIC *********************************************/
-    
+    /**
+    * is loaded?
+    */
+    public boolean function isLoaded(){
+        return ( len( getMenuID() ) ? true : false );
+    }
+
     public array function populateMenuItems( required array rawData ) {
         var items = [];
         // loop over rawData and create items :)
@@ -71,11 +77,11 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
                 result[ pList[ x ] ] = "";
             }
         }
-        // Comments
+        // menu items
         if( hasMenuItem() ){
             result[ "menuItems" ] = [];
             for( var thisMenuItem in variables.menuItems ){
-                arrayAppend( result[ "comments" ], thisMenuItem.getMemento() );  
+                arrayAppend( result[ "menuItems" ], thisMenuItem.getMemento() );  
             }
         }
         else{
