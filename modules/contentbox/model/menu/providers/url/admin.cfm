@@ -2,6 +2,7 @@
       #html.textfield(
             label="URL:",
             name="url",
+            id="",
             bind=args.menuItem, 
             maxlength="100",
             required="required",

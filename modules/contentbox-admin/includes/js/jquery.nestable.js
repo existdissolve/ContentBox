@@ -476,6 +476,9 @@
                 if (typeof params === 'string' && typeof plugin[params] === 'function') {
                     retval = plugin[params]();
                 }
+                if( typeof params === 'object' && params.fn ) {
+                    retval = plugin[ params.fn ].apply( plugin, params.args );
+                }
             }
         });
 

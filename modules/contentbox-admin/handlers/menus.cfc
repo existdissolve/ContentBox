@@ -128,8 +128,16 @@ component extends="baseHandler" {
         if( !len( rc.slug ) ) { 
             rc.slug = getPlugin( "HTMLHelper" ).slugify( rc.title ); 
         }
+        
         // populate and get menu
-        var Menu = populateModel( menuService.get( id=rc.menuID ) );
+        var Menu = populateModel( model=menuService.get( id=rc.menuID ), exclude="menuItems" );
+        // clear menu items
+        arrayClear( Menu.getMenuItems() );
+        // populate items from form
+        var items = Menu.populateMenuItems( rawData=deserializeJSON( rc.menuItems ) );
+        for( var item in items ) {
+            Menu.addMenuItem( item );
+        }
         // announce event
         announceInterception( "cbadmin_preMenuSave", { menu=Menu, menuID=rc.menuID } );
         // save menu
@@ -139,7 +147,7 @@ component extends="baseHandler" {
         // messagebox
         getPlugin( "MessageBox" ).setMessage( "info", "Menu saved!" );
         // relocate
-        setNextEvent(prc.xehCategories);
+        setNextEvent( prc.xehMenus );
     }
     
     // remove

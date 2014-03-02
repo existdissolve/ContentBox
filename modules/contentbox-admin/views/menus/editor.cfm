@@ -14,7 +14,9 @@
                 #getPlugin( "MessageBox" ).renderit()#
                 <div>
                     <cfloop collection="#prc.providers#" item="provider">
-                        <a class="btn provider" data-provider="#provider#" title="#prc.providers[ provider].getDescription()#">#provider#</a>
+                        <a class="btn btn-small provider" data-provider="#provider#" title="#prc.providers[ provider].getDescription()#">
+                            <i class="#prc.providers[ provider].getIconCls()#"></i> #provider#
+                        </a>
                     </cfloop>
                 </div>
                 <div class="dd" id="nestable">
@@ -23,6 +25,17 @@
                     </ol>
                 </div>
             </div>
+        </div>
+        <div id="context-menu" class="dropdown clearfix" style="position: absolute;display:none;">
+            <ul class="dropdown-menu" role="menu" style="display:block;margin-bottom:5px;">
+                <cfloop collection="#prc.providers#" item="provider">
+                    <li>
+                        <a tabindex="-1" class="child-provider" data-provider="#provider#" title="#prc.providers[ provider].getDescription()#">
+                            <i class="#prc.providers[ provider].getIconCls()#"></i> Add #provider# Item
+                        </a>
+                    </li>
+                </cfloop>
+          </ul>
         </div>
     </div>
     <!--- main sidebar --->
@@ -34,7 +47,8 @@
             </div>
             <div class="body">
                 <!--- id --->
-                #html.hiddenField( name="menuID", bind=prc.menu )#    
+                #html.hiddenField( name="menuID", bind=prc.menu )#
+                #html.hiddenField( name="menuItems" )#      
                 <!--- title --->
                 #html.textfield(
                     label="Title:",

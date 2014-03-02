@@ -29,6 +29,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     property name="iconCls" type="string";
     property name="description" type="string";
     property name="renderer" inject="provider:ColdBoxRenderer";
+    property name="contentService" inject="id:contentService@cb";
 
     /**
      * Constructor
@@ -56,7 +57,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     }
 
     /**
-     * Gets the name of the menu item provider
+     * Gets the name of the menu item provider 
      */
     public string function getType() {
         return type;
@@ -75,9 +76,20 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
     public string function getAdminTemplate( required any menuItem, any event ) {
         var prc = event.getCollection( private=true );
         prc.xehRelatedContentSelector = "#prc.cbAdminEntryPoint#.content.relatedContentSelector";
+        var title = "";
+        var slug = "";
+        if( !isNull( arguments.menuItem.getContentSlug() ) ) {
+            var content = contentService.findBySlug( slug=arguments.menuItem.getContentSlug() );
+            if( !isNull( content ) ) {
+                title = content.getTitle();
+                slug = arguments.menuItem.getContentSlug();
+            }
+        }
         var args = { 
             menuItem=arguments.menuItem,
-            xehContentSelector = "#prc.cbAdminEntryPoint#.content.showRelatedContentSelector"
+            xehContentSelector = "#prc.cbAdminEntryPoint#.content.showRelatedContentSelector",
+            title = title,
+            slug = slug
         };
         return renderer.get().renderExternalView( 
             view="contentbox/model/menu/providers/content/admin", 

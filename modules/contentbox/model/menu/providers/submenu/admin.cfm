@@ -2,9 +2,9 @@
     <div class="control-group">
         <label for="submenu" class="control-label">Select Sub-menu:</label>
         <div class="controls">
-            <select name="submenu" id="submenu" class="textfield width95" required="true" title="Select a submenu">
+            <select name="menuSlug" class="textfield width95" required="true" title="Select a submenu">
                 <cfloop array="#args.menus#" index="menu">
-                    <option value="#menu.getMenuID()#">#menu.getTitle()#</option>
+                    <option value="#menu.getSlug()#">#menu.getTitle()#</option>
                 </cfloop>
             </select>
         </div>

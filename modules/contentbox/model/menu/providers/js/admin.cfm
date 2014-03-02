@@ -2,6 +2,7 @@
       #html.textarea(
             label="JavaScript Code:",
             name="js",
+            id="",
             bind=args.menuItem, 
             maxlength="100",
             required="required",

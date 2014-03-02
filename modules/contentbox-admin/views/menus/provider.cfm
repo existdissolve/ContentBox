@@ -1,15 +1,18 @@
 <cfoutput>
     <div class="dd-handle dd3-handle" title="Drag to reorder"><i class="icon-move icon-large"></i></div>
     <div class="dd3-type" title="#args.provider.getDescription()#"><i class="#args.provider.getIconCls()#"></i></div>
-    <div class="dd3-content double">#args.menuItem.getLabel()#</div>
+    <div class="dd3-content double" data-toggle="context" data-target="##context-menu">#args.menuItem.getLabel()#</div>
     <div class="dd3-extracontent" style="display:none;">
         <!--- id --->
-        #html.hiddenField( name="menuItemID", bind=args.menuItem )#  
+        <cfset label = "label-#getTickCount()#">
+        #html.hiddenField( name="menuItemID", bind=args.menuItem, id="" )#  
+        #html.hiddenField( name="menuType", value=args.provider.getType(), id="" )# 
         <div class="row-fluid">
             <span class="span6">
                 #html.textfield(
                     label="Label:",
                     name="label",
+                    id="",
                     bind=args.menuItem, 
                     maxlength="100",
                     required="required",
@@ -22,6 +25,7 @@
                 #html.textfield(
                     label="Data Attributes:",
                     name="data",
+                    id="",
                     bind=args.menuItem, 
                     maxlength="100",
                     title="Data attributes to set on this menu item's HTML element",
@@ -36,9 +40,9 @@
                 #html.textfield(
                     label="Title:",
                     name="title",
+                    id="",
                     bind=args.menuItem, 
                     maxlength="100",
-                    required="required",
                     title="The title for this menu item",
                     class="textfield width95",
                     wrapper="div class=controls",
@@ -48,6 +52,7 @@
                 #html.textfield(
                     label="CSS Classes:",
                     name="cls",
+                    id="",
                     bind=args.menuItem, 
                     maxlength="100",
                     title="Additional CSS classes to use for this menu item's HTML element",
