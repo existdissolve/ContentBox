@@ -74,9 +74,19 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
      * Retrieves template for use in admin screens for this type of menu item provider
      */ 
     public string function getAdminTemplate( required any menuItem, any event ) {
-        var menus = MenuService.newCriteria().list( sortOrder="title ASC" );
+        var rc = event.getCollection();
+        var criteria = menuService.newCriteria();
+        var existingSlug = "";
+        if( structKeyExists( rc, "menuID" ) && len( rc.menuID ) ) {
+            criteria.ne( "menuID", JavaCast( "int", rc.menuID ) );
+        }
+        if( !isNull( arguments.menuItem.getMenuSlug() ) ) {
+             existingSlug = arguments.menuItem.getMenuSlug();
+        }
+        var menus = criteria.list( sortOrder="title ASC" );
         var args = {
-            menus = menus
+            menus = menus,
+            existingSlug = existingSlug
         };
         return renderer.get().renderExternalView( 
             view="contentbox/model/menu/providers/submenu/admin", 

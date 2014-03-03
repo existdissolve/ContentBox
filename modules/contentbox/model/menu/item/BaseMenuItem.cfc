@@ -33,7 +33,7 @@ component persistent="true" entityName="cbMenuItem" table="cb_menuItem" cachenam
         var pList = menuItemService.getPropertyNames();
         var result = {};
         // Do simple properties only
-        for(var x=1; x lte arrayLen( pList ); x++ ){
+        for( var x=1; x lte arrayLen( pList ); x++ ){
             if( structKeyExists( variables, pList[ x ] ) ){
                 if( isSimpleValue( variables[ pList[ x ] ] ) ){
                     result[ pList[ x ] ] = variables[ pList[ x ] ]; 

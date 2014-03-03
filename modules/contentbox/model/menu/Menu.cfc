@@ -2,6 +2,7 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
     // DI Injections
     property name="menuService" inject="menuService@cb" persistent="false";
     property name="menuItemService" inject="menuItemService@cb" persistent="false";
+    property name="ORMService" inject="coldbox:plugin:ORMService" persistent="false";
     // Non-relational Properties
     property name="menuID" fieldtype="id" generator="native" setter="false";
     property name="title" notnull="true" ormtype="string" length="200" default="" index="idx_menutitle";
@@ -35,16 +36,27 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
         return ( len( getMenuID() ) ? true : false );
     }
 
-    public array function populateMenuItems( required array rawData ) {
+    public void function populateMenuItems( required array rawData ) {
+        var items = createMenuItems( arguments.rawData );
+        for( var item in items ) {
+            addMenuItem( item );
+        }
+    }
+
+    /**
+     * Recusive function to build menu items hierarchy
+     * @rawData.hint The raw data definitions for the menu items
+     */
+    private array function createMenuItems( required array rawData ) {
         var items = [];
         // loop over rawData and create items :)
         for( var data in arguments.rawData ) {
             var provider = menuItemService.getProvider( data.menuType );
-            var entity = entityNew( provider.getEntityName() );
-            var newItem = MenuItemService.populate( target=entity, memento=data, exclude="children" );
+            var entity = ORMService.get( entityName=provider.getEntityName(), id=0 );//entityNew( provider.getEntityName() );
+            var newItem = menuItemService.populate( target=entity, memento=data, exclude="children" );
                 newItem.setMenu( this );
             if( structKeyExists( data, "children" ) && isArray( data.children ) ) {
-                var children = populateMenuItems( data.children );
+                var children = createMenuItems( data.children );
                 var setter = [];
                 for( child in children ) {
                     child.setParent( newItem );
@@ -62,12 +74,12 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
      * Get a flat representation of this menu
      * slugCache.hint Cache of slugs to prevent infinite recursions
      */
-    public struct function getMemento( required array slugCache=[], counter=0 ){
+    public struct function getMemento(){
         var pList = menuService.getPropertyNames();
         var result = {};
         
         // Do simple properties only
-        for(var x=1; x lte arrayLen( pList ); x++ ){
+        for( var x=1; x lte arrayLen( pList ); x++ ){
             if( structKeyExists( variables, pList[ x ] ) ){
                 if( isSimpleValue( variables[ pList[ x ] ] ) ){
                     result[ pList[ x ] ] = variables[ pList[ x ] ]; 
@@ -81,7 +93,10 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
         if( hasMenuItem() ){
             result[ "menuItems" ] = [];
             for( var thisMenuItem in variables.menuItems ){
-                arrayAppend( result[ "menuItems" ], thisMenuItem.getMemento() );  
+                // only export top-level items (items themselves will take care of children)
+                if( !( thisMenuItem.hasParent() ) ) {
+                    arrayAppend( result[ "menuItems" ], thisMenuItem.getMemento() );
+                }                  
             }
         }
         else{

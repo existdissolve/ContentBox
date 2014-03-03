@@ -195,7 +195,7 @@
                 var provider = $( this ).data( 'provider' );
                 $.ajax({
                     url: '#event.buildLink( linkto=prc.xehMenuItem )#',
-                    data: { type: provider },
+                    data: { type: provider, menuID: #rc.menuID# },
                     success: function( data, textStatus, jqXHR ){
                         addMenuItem( data );
                     }
@@ -216,15 +216,7 @@
                 }
             });
             //******** setup nestable menu items **************//
-            $( '##nestable' ).nestable();            
-            /**
-             * gets a hierarchical json representation of the menus
-             */
-            function getMenu1() {
-                var hierarchy = $('.sortable').nestedSortable( 'toHierarchy' );
-                console.log( hierarchy )
-                console.log( $.quoteString( $.toJSON( hierarchy ) ) );
-            }
+            $( '##nestable' ).nestable();
         });
     </script>
 </cfoutput>

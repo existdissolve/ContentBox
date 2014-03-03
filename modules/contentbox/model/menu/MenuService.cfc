@@ -156,23 +156,10 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
             // date conversion tests
             menu.createdDate    = reReplace( menu.createdDate, badDateRegex, "" );            
             // populate content from data
-            populator.populateFromStruct( target=oMenu, memento=menu, composeRelationships=false );
-            
+            populator.populateFromStruct( target=oMenu, memento=menu, composeRelationships=false, exclude="menuItems" );
             // Compose Menu Items
             if( arrayLen( menu.menuItems ) ){
-                // TODO!
-                // Create menuItems that don't exist first
-                /*var allPermissions = [];
-                for( var thisPermission in menu.permissions ){
-                    var oPerm = permissionService.findByPermission( thisPermission.permission );
-                    oPerm = ( isNull( oPerm ) ? populator.populateFromStruct( target=permissionService.new(), memento=thisPermission, exclude="permissionID" ) : oPerm );   
-                    // save oPerm if new only
-                    if( !oPerm.isLoaded() ){ permissionService.save( entity=oPerm ); }
-                    // append to add.
-                    arrayAppend( allPermissions, oPerm );
-                }
-                // detach permissions and re-attach
-                oMenu.setPermissions( allPermissions );*/
+                oMenu.populateMenuItems( menu.menuItems );
             }
             // if new or persisted with override then save.
             if( !oMenu.isLoaded() ){
@@ -196,7 +183,6 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
         else{
             arguments.importLog.append( "No menus imported as none where found or able to be overriden from the import file." );
         }
-        
         return arguments.importLog.toString(); 
     }
 

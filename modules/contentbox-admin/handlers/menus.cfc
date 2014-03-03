@@ -76,6 +76,7 @@ component extends="baseHandler" {
 
     // editor
     public void function editor( required any event, required struct rc, required struct prc ){
+        event.paramValue( "menuID", "" );
         // get new or persisted
         prc.menuItems = "";
         prc.menu  = menuService.get( event.getValue( "menuID", 0 ) );   
@@ -165,10 +166,7 @@ component extends="baseHandler" {
             Menu.getMenuItems().clear();
         }
         // populate items from form
-        var items = Menu.populateMenuItems( rawData=deserializeJSON( rc.menuItems ) );
-        for( var item in items ) {
-            Menu.addMenuItem( item );
-        }
+        Menu.populateMenuItems( rawData=deserializeJSON( rc.menuItems ) );
         // announce event
         announceInterception( "cbadmin_preMenuSave", { menu=Menu, menuID=rc.menuID } );
         // save menu
@@ -209,7 +207,7 @@ component extends="baseHandler" {
                 // announce event
                 announceInterception("cbadmin_preMenuRemove", { menu=Menu, menuID=menuID } );
                 // Delete it
-                menuService.delete( Menu.removeAllContent() ); 
+                menuService.delete( Menu ); 
                 arrayAppend( messages, "Menu '#title#' removed" );
                 // announce event
                 announceInterception( "cbadmin_postMenuRemove", { menuID=menuID } );
@@ -266,7 +264,7 @@ component extends="baseHandler" {
     }
     
     // import menus
-    public void function importAll( required any event, required struct rc, required struct prc ){
+    function importAll( required any event, required struct rc, required struct prc ){
         event.paramValue( "importFile", "" );
         event.paramValue( "overrideContent", false );
         try {
