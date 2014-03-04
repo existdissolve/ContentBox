@@ -122,6 +122,15 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
     }
     
     /**
+    * Returns an array of slugs of all the content objects in the system.
+    */
+    array function getAllSlugs(){
+        var c = newCriteria();
+        return c.withProjections( property="slug" )
+            .list( sortOrder="slug asc" );
+    }
+
+    /**
     * Import data from a ContentBox JSON file. Returns the import log
     */
     string function importFromFile( required importFile, boolean override=false ){
