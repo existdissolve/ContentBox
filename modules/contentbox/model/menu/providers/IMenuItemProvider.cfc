@@ -34,7 +34,7 @@ interface {
 
     public string function getAdminTemplate( required any menuItem, any event );
 
-    public string function getDisplayTemplate();
+    public string function getDisplayTemplate( required any menuItem, required struct args );
 
     public array function validate();
 

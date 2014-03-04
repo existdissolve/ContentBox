@@ -6,7 +6,6 @@
                 <th id="checkboxHolder" class="{sorter:false}" width="20"><input type="checkbox" onClick="checkAll(this.checked,'contentID')"/></th>
                 <th>Name</th>
                 <th>Slug</th>
-                <!---<th width="40" class="center"><i class="icon-globe icon-large" title="Published Status"></i></th>--->
                 <th width="100" class="center {sorter:false}">Actions</th>
             </tr>
         </thead>
@@ -27,14 +26,6 @@
                 </td>
                 <td>#menu.getSlug()#</td>
                 <td class="center">
-                    <!---<div class="btn-group">
-                        <cfif prc.oAuthor.checkPermission("MENUS_ADMIN")>
-                        <!--- Edit Command --->
-                        <a class="btn" title="Edit Menu" href="#event.buildLink(prc.xehMenuEditor)#/menuID/#menu.getMenuID()#"><i class="icon-edit icon-large"></i> Edit</a>
-                        <!--- Delete Command --->
-                        <a class="btn" title="Delete Menu" href="javascript:remove('#menu.getmenuID()#', 'menuID')" class="confirmIt" data-title="Delete Menu?"><i class="icon-trash icon-large" id="delete_#menu.getMenuID()#"></i></a>
-                        </cfif>
-                    </div>--->
                     <div class="btn-group">
                         <a class="btn dropdown-toggle" data-toggle="dropdown" href="##" title="Menu Actions">
                             <i class="icon-cogs icon-large"></i>

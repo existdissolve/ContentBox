@@ -20,21 +20,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and 
 limitations under the License.
 ********************************************************************************
- * Provider for URL-type menu items
+ * Base Provider
  */
-component implements="contentbox.model.menu.providers.IMenuItemProvider" extends="contentbox.model.menu.providers.BaseProvider" accessors=true {
+component accessors=true {
+    property name="name" type="string";
+    property name="entityName" type="string";
+    property name="type" type="string";
+    property name="iconCls" type="string";
+    property name="description" type="string";
+    property name="renderer" inject="provider:ColdBoxRenderer";
 
-    /**
-     * Constructor
-     */
-    public URLProvider function init() {
-        setName( "URL" );
-        setType( "URL" );
-        setIconCls( "icon-link" );
-        setEntityName( "cbURLMenuItem" );
-        setDescription( "A menu item to a URL" );
-        return this;
-    }
     /**
      * Gets the name of the menu item provider
      */
@@ -61,37 +56,6 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
      */
     public string function getIconCls() {
         return iconCls;
-    }
-
-    /**
-     * Retrieves template for use in admin screens for this type of menu item provider
-     */ 
-    public string function getAdminTemplate( required any menuItem, any event ) {
-        var args = { 
-            menuItem=arguments.menuItem
-        };
-        return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/url/admin", 
-            module="contentbox",
-            args = args
-        );
-    }
-
-    /**
-     * Retrieves template for use in rendering menu item on the site
-     * @menuItem.hint The menu item object
-     * @args.hint Additional arguments to be used in the method
-     */ 
-    public string function getDisplayTemplate( required any menuItem, required struct args={} ) {
-        var viewArgs = {
-            menuItem=arguments.menuItem,
-            data = arguments.menuItem.getMemento()
-        };
-        return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/url/display", 
-            module="contentbox",
-            args = viewArgs
-        );
     }
 
     /**

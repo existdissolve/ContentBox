@@ -22,13 +22,7 @@ limitations under the License.
 ********************************************************************************
  * Provider for JavaScript-type menu items
  */
-component implements="contentbox.model.menu.providers.IMenuItemProvider" accessors=true {
-    property name="name" type="string";
-    property name="entityName" type="string";
-    property name="type" type="string";
-    property name="iconCls" type="string";
-    property name="description" type="string";
-    property name="renderer" inject="provider:ColdBoxRenderer";
+component implements="contentbox.model.menu.providers.IMenuItemProvider" extends="contentbox.model.menu.providers.BaseProvider" accessors=true {
 
     /**
      * Constructor
@@ -42,34 +36,6 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
         return this;
     }
     /**
-     * Gets the name of the menu item provider
-     */
-    public string function getName() {
-        return name;
-    }
-
-    /**
-     * Gets the entityName for the menu item provider
-     */
-    public string function getEntityName() {
-        return entityName;
-    }
-    
-    /**
-     * Gets the name of the menu item provider
-     */
-    public string function getType() {
-        return type;
-    }
-
-    /**
-     * Gets the iconCls of the menu item provider
-     */
-    public string function getIconCls() {
-        return iconCls;
-    }
-
-    /**
      * Retrieves template for use in admin screens for this type of menu item provider
      */ 
     public string function getAdminTemplate( required any menuItem, any event ) {
@@ -82,23 +48,18 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
 
     /**
      * Retrieves template for use in rendering menu item on the site
+     * @menuItem.hint The menu item object
+     * @args.hint Additional arguments to be used in the method
      */ 
-    public string function getDisplayTemplate() {
-        return "goodbye";
-    }
-
-    /**
-     * Custom validator for this menu item provider...any rules can be applied
-     */
-    public array function validate() {
-        var errors = [];
-        return errors;
-    }
-
-    /**
-     * Determines if menu item provider is valid based on validation criteria
-     */
-    public boolean function isValid() {
-        return !arrayLen( validate() );
+    public string function getDisplayTemplate( required any menuItem, required struct args={} ) {
+        var viewArgs = {
+            menuItem=arguments.menuItem,
+            data = arguments.menuItem.getMemento()
+        };
+        return renderer.get().renderExternalView( 
+            view="contentbox/model/menu/providers/js/display", 
+            module="contentbox",
+            args = viewArgs
+        );
     }
 }

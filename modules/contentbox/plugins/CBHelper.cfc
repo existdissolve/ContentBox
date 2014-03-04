@@ -34,6 +34,8 @@ component extends="coldbox.system.Plugin" accessors="true" singleton threadSafe{
 	property name="widgetService"		inject="id:widgetService@cb";
 	property name="moduleService"		inject="id:moduleService@cb";
 	property name="mobileDetector"		inject="id:mobileDetector@cb";
+	property name="menuService"			inject="id:menuService@cb";
+	property name="menuItemService"		inject="id:menuItemService@cb";
 	property name="minifier"			inject="coldbox:myplugin:JSMin@contentbox";
 	
 	// Constructor
@@ -1009,6 +1011,52 @@ component extends="coldbox.system.Plugin" accessors="true" singleton threadSafe{
 	}
 
 	/************************************** MENUS *********************************************/
+	public any function menu( required string slug, required type="html" ) {
+		var result = "";
+		var menu = menuService.findBySlug( arguments.slug );
+		if( !isNull( menu ) ) {
+			if( arguments.type == "data" ) {
+				return menu.getMemento();
+			}
+			else {
+				return buildProviderMenu( menu=menu );
+			}
+		}
+	}
+
+	/**
+	 * Builds out a custom menu
+	 * @menu.hint The root menu that should be rendered
+	 */
+	private string function buildProviderMenu( required contentbox.model.menu.Menu menu ) {
+		var listType = "ul";
+		//arguments.listType = !reFindNoCase( "^(ul|ol)$", arguments.listType ) ? "<ul>" : arguments.listType;
+		// set start
+		var menuString = "<#listType# class='nav nav-list'>";
+		// now get root items
+		var items = arguments.menu.getRootMenuItems();
+		// build out this top level
+		menuString &= buildProviderMenuLevel( items=items, listType=listType );
+		// set end
+		menuString &= "</#listType#>";
+		return menuString;
+	}
+
+	private string function buildProviderMenuLevel( required array items, required string listType="ul" ) {
+		var menuString = "";
+		// loop over items to build out level
+		for( var item in arguments.items ) {
+			// get template from provider
+			menuString &= '<li #item.getAttributesAsString()#>' & item.getProvider().getDisplayTemplate( item );
+			// if this menu item has children...
+			if( item.hasChild() ) {
+				// recurse, recurse, recurse!
+				menuString &= "<#arguments.listType#>" & buildProviderMenuLevel( items=item.getChildren() ) & "</#arguments.listType#>";
+			}
+			menuString &= "</li>";
+		}
+		return menuString;
+	}
 
 	/**
 	* Render out a quick menu for root level pages

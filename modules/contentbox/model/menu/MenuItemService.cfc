@@ -41,6 +41,7 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
         registerProvider( type="JS", providerPath="contentbox.model.menu.providers.js.JSProvider" );
         registerProvider( type="Media", providerPath="contentbox.model.menu.providers.media.MediaProvider" );
         registerProvider( type="SubMenu", providerPath="contentbox.model.menu.providers.submenu.SubMenuProvider" );
+        registerProvider( type="Heading", providerPath="contentbox.model.menu.providers.heading.HeadingProvider" );
     }
 
     public MenuItemService function registerProvider( required string type, required string providerPath ) {

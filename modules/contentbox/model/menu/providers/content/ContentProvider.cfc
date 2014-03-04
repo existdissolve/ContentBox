@@ -22,14 +22,9 @@ limitations under the License.
 ********************************************************************************
  * Provider for Content-type menu items
  */
-component implements="contentbox.model.menu.providers.IMenuItemProvider" accessors=true {
-    property name="name" type="string";
-    property name="entityName" type="string";
-    property name="type" type="string";
-    property name="iconCls" type="string";
-    property name="description" type="string";
-    property name="renderer" inject="provider:ColdBoxRenderer";
+component implements="contentbox.model.menu.providers.IMenuItemProvider" extends="contentbox.model.menu.providers.BaseProvider" accessors=true {
     property name="contentService" inject="id:contentService@cb";
+    property name="CBHelper" inject="id:CBHelper@cb";
 
     /**
      * Constructor
@@ -41,33 +36,6 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
         setEntityName( "cbContentMenuItem" );
         setDescription( "A menu item based on existing pages or blog entries" );
         return this;
-    }
-    /**
-     * Gets the name of the menu item provider
-     */
-    public string function getName() {
-        return name;
-    }
-
-    /**
-     * Gets the entityName for the menu item provider
-     */
-    public string function getEntityName() {
-        return entityName;
-    }
-
-    /**
-     * Gets the name of the menu item provider 
-     */
-    public string function getType() {
-        return type;
-    }
-
-    /**
-     * Gets the iconCls of the menu item provider
-     */
-    public string function getIconCls() {
-        return iconCls;
     }
 
     /**
@@ -100,23 +68,20 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" accesso
 
     /**
      * Retrieves template for use in rendering menu item on the site
+     * @menuItem.hint The menu item object
+     * @args.hint Additional arguments to be used in the method
      */ 
-    public string function getDisplayTemplate() {
-        return "goodbye";
-    }
-
-    /**
-     * Custom validator for this menu item provider...any rules can be applied
-     */
-    public array function validate() {
-        var errors = [];
-        return errors;
-    }
-
-    /**
-     * Determines if menu item provider is valid based on validation criteria
-     */
-    public boolean function isValid() {
-        return !arrayLen( validate() );
+    public string function getDisplayTemplate( required any menuItem, required struct args={} ) {
+        var content = contentService.findBySlug( arguments.menuItem.getContentSlug() );
+        var viewArgs = {
+            menuItem=arguments.menuItem,
+            contentLink = CBHelper.linkContent( content=content ),
+            data = arguments.menuItem.getMemento()
+        };
+        return renderer.get().renderExternalView( 
+            view="contentbox/model/menu/providers/content/display", 
+            module="contentbox",
+            args = viewArgs
+        );
     }
 }

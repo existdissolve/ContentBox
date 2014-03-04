@@ -1,7 +1,7 @@
 <cfoutput>
     <div class="row-fluid">    
         <!--- main content --->    
-        <div class="span9" id="main-content">    
+        <div class="span12" id="main-content">    
             <div class="box">
                 <!--- Body Header --->
                 <div class="header">

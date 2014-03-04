@@ -71,24 +71,12 @@
                     labelClass="control-label",
                     groupWrapper="div class=control-group"
                 )#
-                <!---#html.textfield(
-                    label="Slug:",
-                    name="slug",
-                    bind=prc.menu, 
-                    maxlength="100",
-                    required="required",
-                    title="The unique slug for this menu",
-                    class="textfield width95",
-                    wrapper="div class=controls",
-                    labelClass="control-label",
-                    groupWrapper="div class=control-group"
-                )#--->
                 <div class="control-group">
                     <label for="slug" class="control-label">Menu Slug:</label>
                     <div class="controls">
                         <div id='slugCheckErrors'></div>
                         <div class="input-append" style="display:inline">
-                            #html.textfield(name="slug",value=prc.menu.getSlug(),maxlength="100",class="textfield width95",title="The unique slug for this menu", disabled="#prc.menu.isLoaded() ? 'true' : 'false'#")#
+                            #html.textfield(name="slug",value=prc.menu.getSlug(),maxlength="100",class="textfield width75",title="The unique slug for this menu", disabled="#prc.menu.isLoaded() ? 'true' : 'false'#")#
                             <a title="" class="btn" href="javascript:void(0)" onclick="toggleSlug(); return false;" data-original-title="Lock/Unlock Menu Slug">
                                 <i id="toggleSlug" class="icon-#prc.menu.isLoaded() ? 'lock' : 'unlock'#"></i>
                             </a>

@@ -58,4 +58,36 @@ component persistent="true" entityName="cbMenuItem" table="cb_menuItem" cachenam
         }
         return result;
     }
+
+    /**
+     * Get a handy, formatted string of attributes that are applicable for the current menu item
+     */
+    public string function getAttributesAsString() {
+        var str = "";
+        var title = !isNull( getTitle() ) ? getTitle() : "";
+        var cls   = !isNull( getCls() ) ? getCls() : "";
+        var data  = !isNull( getData() ) ? getData() : "";
+        // handle title
+        if( len( title ) ) {
+            str &= ' title="#HTMLEditFormat( title )#"';
+        }
+        // handle cls
+        if( len( cls ) ) {
+            str &= ' class="#HTMLEditFormat( cls )#"';
+        }
+        // handle data
+        if( len( data ) && isJSON( data ) ) {
+            // deserialize so we can handle as object
+            var pairs = deserializeJSON( data );
+            // append all data attributes
+            if( isStruct( pairs ) ) {
+                for( dataKey in pairs ){
+                    if( isSimplevalue( pairs[ dataKey ] ) && len( pairs[ dataKey ] ) ){
+                        str &= ' data-#lcase( dataKey )#="#HTMLEditFormat( pairs[ datakey ] )#"';
+                    }
+                }
+            }
+        }
+        return str;
+    }
 }

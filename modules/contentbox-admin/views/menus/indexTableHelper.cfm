@@ -9,8 +9,6 @@ $(document).ready(function() {
     activateConfirmations();
     // activate tooltips
     activateTooltips();
-    // Popovers
-    activateInfoPanels();
 });
 </script>
 </cfoutput>

@@ -43,6 +43,18 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
         }
     }
 
+    public array function getRootMenuItems() {
+        var items = [];
+        if( hasMenuItem() ) {
+            for( var item in getMenuItems() ) {
+                if( !item.hasParent() ) {
+                    arrayAppend( items, item );
+                }
+            }
+        }
+        return items;
+    }
+
     /**
      * Recusive function to build menu items hierarchy
      * @rawData.hint The raw data definitions for the menu items

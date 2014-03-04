@@ -113,7 +113,9 @@ component {
 				// Layout Themes
 				"cbadmin_onLayoutActivation", "cbadmin_onLayoutDeactivation",
 				// Version Control
-				"cbadmin_preContentVersionRemove","cbadmin_postContentVersionRemove","cbadmin_preContentVersionRollback", "cbadmin_postContentVersionRollback"
+				"cbadmin_preContentVersionRemove","cbadmin_postContentVersionRemove","cbadmin_preContentVersionRollback", "cbadmin_postContentVersionRollback",
+				// Menu events
+				"cbadmin_preMenuSave","cbadmin_postMenuSave","cbadmin_preMenuRemove","cbadmin_postMenuRemove"
 			])
 		};
 

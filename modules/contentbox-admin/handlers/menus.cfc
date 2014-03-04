@@ -12,7 +12,7 @@ component extends="baseHandler" {
     this.preHandler_except = "pager";
 
     // pre handler
-    public void function preHandler(event,action,eventArguments){
+    function preHandler(event,action,eventArguments){
         var rc  = event.getCollection();
         var prc = event.getCollection(private=true);
         // exit Handlers
@@ -24,7 +24,7 @@ component extends="baseHandler" {
     }
     
     // index
-    public void function index( required any event, required struct rc, required struct prc ){
+    function index( required any event, required struct rc, required struct prc ){
         // exit Handlers
         prc.xehMenuSave   = "#prc.cbAdminEntryPoint#.menus.save";
         prc.xehMenuExportAll= "#prc.cbAdminEntryPoint#.menus.exportAll";
@@ -40,7 +40,7 @@ component extends="baseHandler" {
         event.setView( "menus/index" );
     }
 
-    public void function filebrowser( required any event, required struct rc, required struct prc ) {
+    function filebrowser( required any event, required struct rc, required struct prc ) {
         prc.defaultEvent = "contentbox-filebrowser:home.index";
         // CKEditor callback
         rc.callback="fbMenuItemSelect";
@@ -54,11 +54,11 @@ component extends="baseHandler" {
     }
 
     // slugify remotely
-    public void function slugify( required any event, required struct rc, required struct prc ){
+    function slugify( required any event, required struct rc, required struct prc ){
         event.renderData( data=trim( getPlugin( "HTMLHelper" ).slugify( rc.slug ) ),type="plain" );
     }
     
-    public void function slugUnique( required any event, required struct rc, required struct prc ){
+    function slugUnique( required any event, required struct rc, required struct prc ){
         // Params
         event.paramValue( "slug", "" );
         event.paramValue( "menuID", "" );
@@ -75,7 +75,7 @@ component extends="baseHandler" {
     }
 
     // editor
-    public void function editor( required any event, required struct rc, required struct prc ){
+    function editor( required any event, required struct rc, required struct prc ){
         event.paramValue( "menuID", "" );
         // get new or persisted
         prc.menuItems = "";
@@ -100,7 +100,7 @@ component extends="baseHandler" {
         event.setView( "menus/editor" );
     }
 
-    public void function createMenuItem( required any event, required struct rc, required struct prc ) {
+    function createMenuItem( required any event, required struct rc, required struct prc ) {
         prc.provider = menuItemService.getProvider( arguments.rc.type );
         // get new or persisted
         var args = {
@@ -119,10 +119,10 @@ component extends="baseHandler" {
     }
 
     // menuTable
-    public void function menuTable( event, rc, prc ){
+    function menuTable( event, rc, prc ){
         // params
         event.paramValue("page",1);
-        event.paramValue("searchContent","");
+        event.paramValue("searchMenu","");
         event.paramValue("isFiltering", false, true);
         event.paramValue("showAll", false);
 
@@ -136,7 +136,7 @@ component extends="baseHandler" {
             prc.isFiltering = true;
         }
         // search content with filters and all
-        var results = menuService.search(search=rc.searchContent,
+        var results = menuService.search(searchTerm=rc.searchMenu,
                                          offset=( rc.showAll ? 0 : prc.paging.startRow-1 ),
                                          max=( rc.showAll ? 0 : prc.cbSettings.cb_paging_maxrows ),
                                          sortOrder="createdDate desc");
@@ -151,7 +151,7 @@ component extends="baseHandler" {
     }
 
     // save
-    public void function save( required any event, required struct rc, required struct prc ){
+    function save( required any event, required struct rc, required struct prc ){
         event.paramValue( "slug", "" );
         // slugify if not passed, and allow passed slugs to be saved as-is
         if( !len( rc.slug ) ) { 
@@ -180,7 +180,7 @@ component extends="baseHandler" {
     }
     
     // remove
-    public void function remove( required any event, required struct rc, required struct prc ){
+    function remove( required any event, required struct rc, required struct prc ){
         // params
         event.paramValue( "menuID", "" );
         
@@ -220,7 +220,7 @@ component extends="baseHandler" {
     }
 
     // Export menu
-    public void function export( required any event, required struct rc, required struct prc ){
+    function export( required any event, required struct rc, required struct prc ){
         event.paramValue("format", "json");
         // get page
         prc.menu  = menuService.get( event.getValue( "menuID", 0 ) );
@@ -245,7 +245,7 @@ component extends="baseHandler" {
     }
 
     // export all menus
-    public void function exportAll( required any event, required struct rc, required struct prc ){
+    function exportAll( required any event, required struct rc, required struct prc ){
         event.paramValue( "format", "json" );
         // get all prepared content objects
         var data  = menuService.getAllForExport();

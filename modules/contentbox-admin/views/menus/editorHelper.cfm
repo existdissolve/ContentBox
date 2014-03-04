@@ -195,7 +195,7 @@
                 var provider = $( this ).data( 'provider' );
                 $.ajax({
                     url: '#event.buildLink( linkto=prc.xehMenuItem )#',
-                    data: { type: provider, menuID: #rc.menuID# },
+                    data: { type: provider, menuID: '#rc.menuID#' },
                     success: function( data, textStatus, jqXHR ){
                         addMenuItem( data );
                     }
