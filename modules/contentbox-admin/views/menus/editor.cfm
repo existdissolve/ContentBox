@@ -71,6 +71,18 @@
                     labelClass="control-label",
                     groupWrapper="div class=control-group"
                 )#
+                #html.select(
+                    options="ul,ol", 
+                    name="listType",
+                    label="List Type:",
+                    bind=prc.menu,
+                    required="required",
+                    title="Select the type of list (ordered or unordered)",
+                    class="textfield width98",
+                    wrapper="div class=controls",
+                    labelClass="control-label",
+                    groupWrapper="div class=control-group"
+                )#
                 <div class="control-group">
                     <label for="slug" class="control-label">Menu Slug:</label>
                     <div class="controls">

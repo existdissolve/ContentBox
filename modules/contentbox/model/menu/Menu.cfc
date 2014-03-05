@@ -8,6 +8,7 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
     property name="title" notnull="true" ormtype="string" length="200" default="" index="idx_menutitle";
     property name="slug" notnull="true" ormtype="string" length="200" default="" unique="true" index="idx_menuslug";
     property name="cls" ormtype="string" length="160" default="";
+    property name="listType" ormtype="string" length="20" default="ul";
     property name="createdDate" ormtype="timestamp" notnull="true" update="false";
     // O2M -> Comments
     property name="menuItems" singularName="menuItem" fieldtype="one-to-many" type="array" cfc="contentbox.model.menu.item.BaseMenuItem" fkcolumn="FK_menuID" cascade="all-delete-orphan" inverse="true";
@@ -36,13 +37,20 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
         return ( len( getMenuID() ) ? true : false );
     }
 
+    /**
+     * Creates menu items from raw data object
+     * @rawData.hint The raw data from which to create menu items
+     */
     public void function populateMenuItems( required array rawData ) {
         var items = createMenuItems( arguments.rawData );
         for( var item in items ) {
             addMenuItem( item );
         }
     }
-
+    
+    /**
+     * Retrieves root menu items (only items with no parents)
+     */
     public array function getRootMenuItems() {
         var items = [];
         if( hasMenuItem() ) {

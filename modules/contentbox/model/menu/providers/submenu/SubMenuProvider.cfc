@@ -69,12 +69,23 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
         //#cb.menu( slug="yet-another-menu", type="html" )#
         var viewArgs = {
             menuItem=arguments.menuItem,
-            data = arguments.menuItem.getMemento()
+            data = arguments.menuItem.getMemento(),
+            slugCache = arguments.args.slugCache
         };
         return renderer.get().renderExternalView( 
             view="contentbox/model/menu/providers/submenu/display", 
             module="contentbox",
             args = viewArgs
         );
+    }
+
+    /**
+     * Available precheck to determine display-ability of menu item
+     * @menuItem.hint The menu item object
+     * @args.hint Additional arguments to be used in the method
+     */
+    public boolean function canDisplay( required any menuItem, required struct args ) {
+        var slug = menuItem.getMenuSlug();
+        return !arrayFindNoCase( args.slugCache, slug ) ? true : false;
     }
 }
