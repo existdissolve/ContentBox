@@ -1011,7 +1011,7 @@ component extends="coldbox.system.Plugin" accessors="true" singleton threadSafe{
 	}
 
 	/************************************** MENUS *********************************************/
-	public any function menu( required string slug, required type="html" ) {
+	public any function menu( required string slug, required type="html", required array slugCache=[] ) {
 		var result = "";
 		var menu = menuService.findBySlug( arguments.slug );
 		if( !isNull( menu ) ) {
@@ -1019,7 +1019,7 @@ component extends="coldbox.system.Plugin" accessors="true" singleton threadSafe{
 				return menu.getMemento();
 			}
 			else {
-				return buildProviderMenu( menu=menu );
+				return buildProviderMenu( menu=menu, slugCache=arguments.slugCache );
 			}
 		}
 	}
@@ -1027,33 +1027,52 @@ component extends="coldbox.system.Plugin" accessors="true" singleton threadSafe{
 	/**
 	 * Builds out a custom menu
 	 * @menu.hint The root menu that should be rendered
+	 * @slugCache.hint The cache of menu slugs already used in this request
 	 */
-	private string function buildProviderMenu( required contentbox.model.menu.Menu menu ) {
-		var listType = "ul";
+	private string function buildProviderMenu( required contentbox.model.menu.Menu menu, required array slugCache=[] ) {
+		var listType = arguments.menu.getListType();
 		//arguments.listType = !reFindNoCase( "^(ul|ol)$", arguments.listType ) ? "<ul>" : arguments.listType;
 		// set start
 		var menuString = "<#listType# class='nav nav-list'>";
 		// now get root items
 		var items = arguments.menu.getRootMenuItems();
+		// create cache of slugs to prevent infinite recursions
+		arrayAppend( arguments.slugCache, menu.getSlug() );
 		// build out this top level
-		menuString &= buildProviderMenuLevel( items=items, listType=listType );
+		menuString &= buildProviderMenuLevel( items=items, listType=listType, slugCache=slugCache );
 		// set end
 		menuString &= "</#listType#>";
 		return menuString;
 	}
 
-	private string function buildProviderMenuLevel( required array items, required string listType="ul" ) {
+	/**
+	 * Builds out a level of a custom menu
+	 * @items.hint An array of menu items for this level
+	 * @listType.hint The type of list to create (derived from owning menu)
+	 * @slugCache.hint The cache of menu slugs already used in this request
+	 */
+	private string function buildProviderMenuLevel( 
+		required array items, 
+		required string listType="ul", 
+		required array slugCache=[] 
+	) {
 		var menuString = "";
 		// loop over items to build out level
 		for( var item in arguments.items ) {
-			// get template from provider
-			menuString &= '<li #item.getAttributesAsString()#>' & item.getProvider().getDisplayTemplate( item );
-			// if this menu item has children...
-			if( item.hasChild() ) {
-				// recurse, recurse, recurse!
-				menuString &= "<#arguments.listType#>" & buildProviderMenuLevel( items=item.getChildren() ) & "</#arguments.listType#>";
+			var extras = { slugCache=arguments.slugCache, listType=arguments.listType };
+			// check that item can be added
+			if( item.getProvider().canDisplay( menuItem=item, args=extras ) ) {
+				// get template from provider
+				menuString &= '<li #item.getAttributesAsString()#>' & item.getProvider().getDisplayTemplate( item, extras );
+				// if this menu item has children...
+				if( item.hasChild() ) {
+					// recurse, recurse, recurse!
+					menuString &= 	"<#arguments.listType#>" & 
+									buildProviderMenuLevel( items=item.getChildren(), listType=arguments.listType, slugCache=arguments.slugCache ) & 
+									"</#arguments.listType#>";
+				}
+				menuString &= "</li>";
 			}
-			menuString &= "</li>";
 		}
 		return menuString;
 	}

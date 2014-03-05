@@ -67,7 +67,7 @@
         <!---End default fields--->
 
         <!---do provider thing--->
-        #args.provider.getAdminTemplate( menuItem=args.menuItem, event=event )#
+        #args.provider.getAdminTemplate( menuItem=args.menuItem )#
         </div>
         <!---end provider thing--->
     </div>

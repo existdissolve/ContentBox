@@ -37,12 +37,15 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
     }
     /**
      * Retrieves template for use in admin screens for this type of menu item provider
+     * @menuItem.hint The menu item object
+     * @options.hint Additional arguments to be used in the method
      */ 
-    public string function getAdminTemplate( required any menuItem, any event ) {
-        return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/js/admin", 
-            module="contentbox",
-            args = { menuItem=arguments.menuItem }
+    public string function getAdminTemplate( required any menuItem, required struct options={} ) {
+        var viewArgs = { menuItem=arguments.menuItem };
+        return renderer.get().renderView( 
+            view="menus/providers/js/admin", 
+            module="contentbox-admin",
+            args = viewArgs
         );
     }
 
@@ -51,14 +54,14 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
      * @menuItem.hint The menu item object
      * @args.hint Additional arguments to be used in the method
      */ 
-    public string function getDisplayTemplate( required any menuItem, required struct args={} ) {
+    public string function getDisplayTemplate( required any menuItem, required struct options={} ) {
         var viewArgs = {
             menuItem=arguments.menuItem,
             data = arguments.menuItem.getMemento()
         };
-        return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/js/display", 
-            module="contentbox",
+        return renderer.get().renderView( 
+            view="menus/providers/js/display", 
+            module="contentbox-admin",
             args = viewArgs
         );
     }

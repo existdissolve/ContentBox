@@ -32,9 +32,11 @@ interface {
 
     public string function getDescription();
 
-    public string function getAdminTemplate( required any menuItem, any event );
+    public string function getAdminTemplate( required any menuItem, required struct options );
 
-    public string function getDisplayTemplate( required any menuItem, required struct args );
+    public string function getDisplayTemplate( required any menuItem, required struct options );
+
+    public boolean function canDisplay( required any menuItem, required struct options );
 
     public array function validate();
 

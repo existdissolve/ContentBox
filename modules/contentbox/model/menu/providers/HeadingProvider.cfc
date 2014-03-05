@@ -20,48 +20,43 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and 
 limitations under the License.
 ********************************************************************************
- * Provider for Media-type menu items
+ * Provider for Heading-type menu items
  */
 component implements="contentbox.model.menu.providers.IMenuItemProvider" extends="contentbox.model.menu.providers.BaseProvider" accessors=true {
-    property name="CBHelper" inject="id:CBHelper@cb";
 
     /**
      * Constructor
      */
-    public MediaProvider function init() {
-        setName( "Media" );
-        setType( "Media" );
-        setIconCls( "icon-picture" );
-        setEntityName( "cbMediaMenuItem" );
-        setDescription( "A menu item to a media item" );
+    public HeadingProvider function init() {
+        setName( "Heading" );
+        setType( "Heading" );
+        setIconCls( "icon-eye-open" );
+        setEntityName( "cbHeadingMenuItem" );
+        setDescription( "A menu item which creates a heading" );
         return this;
     }
+
     /**
      * Retrieves template for use in admin screens for this type of menu item provider
+     * @menuItem.hint The menu item object
+     * @options.hint Additional arguments to be used in the method
      */ 
-    public string function getAdminTemplate( required any menuItem, any event ) {
-        var args = { 
-            menuItem=arguments.menuItem,
-            xehMediaSelector= "#event.buildLink( linkTo='cbadmin.menus.filebrowser' )#"
-        };
-        return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/media/admin", 
-            module="contentbox",
-            args = args
-        );
+    public string function getAdminTemplate( required any menuItem, required struct options={} ) {
+        return "";
     }
+
     /**
      * Retrieves template for use in rendering menu item on the site
      * @menuItem.hint The menu item object
-     * @args.hint Additional arguments to be used in the method
+     * @options.hint Additional arguments to be used in the method
      */ 
-    public string function getDisplayTemplate( required any menuItem, required struct args={} ) {
+    public string function getDisplayTemplate( required any menuItem, required struct options={} ) {
         var viewArgs = {
             menuItem=arguments.menuItem,
             data = arguments.menuItem.getMemento()
         };
         return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/media/display", 
+            view="contentbox/model/menu/providers/heading/display", 
             module="contentbox",
             args = viewArgs
         );

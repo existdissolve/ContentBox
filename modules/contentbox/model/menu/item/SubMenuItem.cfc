@@ -2,7 +2,7 @@ component persistent="true" entityName="cbSubMenuItem" table="cb_menuItem" exten
     // simple content
     property name="menuSlug" notnull="false" ormtype="string" default="";
     // DI
-    property name="provider" persistent="false" inject="contentbox.model.menu.providers.submenu.SubMenuProvider";
+    property name="provider" persistent="false" inject="contentbox.model.menu.providers.SubMenuProvider";
     
     /**
      * Get a flat representation of this menu item

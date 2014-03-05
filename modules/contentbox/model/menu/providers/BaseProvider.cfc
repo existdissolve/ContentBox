@@ -63,7 +63,7 @@ component accessors=true {
      * @menuItem.hint The menu item object
      * @args.hint Additional arguments to be used in the method
      */
-    public boolean function canDisplay( required any menuItem, required struct args ) {
+    public boolean function canDisplay( required any menuItem, required struct options={} ) {
         return true;
     }
 

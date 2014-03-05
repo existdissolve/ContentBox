@@ -36,12 +36,12 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
     }
 
     function onDIComplete(){
-        registerProvider( type="URL", providerPath="contentbox.model.menu.providers.url.URLProvider" );
-        registerProvider( type="Content", providerPath="contentbox.model.menu.providers.content.ContentProvider" );
-        registerProvider( type="JS", providerPath="contentbox.model.menu.providers.js.JSProvider" );
-        registerProvider( type="Media", providerPath="contentbox.model.menu.providers.media.MediaProvider" );
-        registerProvider( type="SubMenu", providerPath="contentbox.model.menu.providers.submenu.SubMenuProvider" );
-        registerProvider( type="Heading", providerPath="contentbox.model.menu.providers.heading.HeadingProvider" );
+        registerProvider( type="URL", providerPath="contentbox.model.menu.providers.URLProvider" );
+        registerProvider( type="Content", providerPath="contentbox.model.menu.providers.ContentProvider" );
+        registerProvider( type="JS", providerPath="contentbox.model.menu.providers.JSProvider" );
+        registerProvider( type="Media", providerPath="contentbox.model.menu.providers.MediaProvider" );
+        registerProvider( type="SubMenu", providerPath="contentbox.model.menu.providers.SubMenuProvider" );
+        registerProvider( type="Heading", providerPath="contentbox.model.menu.providers.HeadingProvider" );
     }
 
     public MenuItemService function registerProvider( required string type, required string providerPath ) {

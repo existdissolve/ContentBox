@@ -25,6 +25,7 @@ limitations under the License.
 component implements="contentbox.model.menu.providers.IMenuItemProvider" extends="contentbox.model.menu.providers.BaseProvider" accessors=true {
     property name="contentService" inject="id:contentService@cb";
     property name="CBHelper" inject="id:CBHelper@cb";
+    property name="requestService"  inject="coldbox:requestService";
 
     /**
      * Constructor
@@ -40,9 +41,11 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
 
     /**
      * Retrieves template for use in admin screens for this type of menu item provider
+     * @menuItem.hint The menu item object
+     * @options.hint Additional arguments to be used in the method
      */ 
-    public string function getAdminTemplate( required any menuItem, any event ) {
-        var prc = event.getCollection( private=true );
+    public string function getAdminTemplate( required any menuItem, required struct options={} ) {
+        var prc = requestService.getContext().getCollection( private=true );
         prc.xehRelatedContentSelector = "#prc.cbAdminEntryPoint#.content.relatedContentSelector";
         var title = "";
         var slug = "";
@@ -53,34 +56,34 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
                 slug = arguments.menuItem.getContentSlug();
             }
         }
-        var args = { 
+        var viewArgs = { 
             menuItem=arguments.menuItem,
             xehContentSelector = "#prc.cbAdminEntryPoint#.content.showRelatedContentSelector",
             title = title,
             slug = slug
         };
-        return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/content/admin", 
-            module="contentbox",
-            args = args
+        return renderer.get().renderView( 
+            view="menus/providers/content/admin", 
+            module="contentbox-admin",
+            args = viewArgs
         );
     }
 
     /**
      * Retrieves template for use in rendering menu item on the site
      * @menuItem.hint The menu item object
-     * @args.hint Additional arguments to be used in the method
+     * @options.hint Additional arguments to be used in the method
      */ 
-    public string function getDisplayTemplate( required any menuItem, required struct args={} ) {
+    public string function getDisplayTemplate( required any menuItem, required struct options={} ) {
         var content = contentService.findBySlug( arguments.menuItem.getContentSlug() );
         var viewArgs = {
             menuItem=arguments.menuItem,
             contentLink = CBHelper.linkContent( content=content ),
             data = arguments.menuItem.getMemento()
         };
-        return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/content/display", 
-            module="contentbox",
+        return renderer.get().renderView( 
+            view="menus/providers/content/display", 
+            module="contentbox-admin",
             args = viewArgs
         );
     }
@@ -88,9 +91,9 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
     /**
      * Available precheck to determine display-ability of menu item
      * @menuItem.hint The menu item object
-     * @args.hint Additional arguments to be used in the method
+     * @options.hint Additional arguments to be used in the method
      */
-    public boolean function canDisplay( required any menuItem, required struct args ) {
+    public boolean function canDisplay( required any menuItem, required struct options ) {
         var content = contentService.findBySlug( arguments.menuItem.getContentSlug() );
         return content.isLoaded() && ( content.isPage() || content.isEntry() ) ? true : false;
     }

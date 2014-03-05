@@ -24,6 +24,7 @@ limitations under the License.
  */
 component implements="contentbox.model.menu.providers.IMenuItemProvider" extends="contentbox.model.menu.providers.BaseProvider" accessors=true {
     property name="menuService" inject="id:menuService@cb";
+    property name="requestService"  inject="coldbox:requestService";
 
     /**
      * Constructor
@@ -38,9 +39,11 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
     }
     /**
      * Retrieves template for use in admin screens for this type of menu item provider
+     * @menuItem.hint The menu item object
+     * @options.hint Additional arguments to be used in the method
      */ 
-    public string function getAdminTemplate( required any menuItem, any event ) {
-        var rc = event.getCollection();
+    public string function getAdminTemplate( required any menuItem, required struct options={} ) {
+        var rc = requestService.getContext().getCollection();
         var criteria = menuService.newCriteria();
         var existingSlug = "";
         if( structKeyExists( rc, "menuID" ) && len( rc.menuID ) ) {
@@ -50,31 +53,31 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
              existingSlug = arguments.menuItem.getMenuSlug();
         }
         var menus = criteria.list( sortOrder="title ASC" );
-        var args = {
+        var viewArgs = {
             menus = menus,
             existingSlug = existingSlug
         };
-        return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/submenu/admin", 
-            module="contentbox",
-            args = args
+        return renderer.get().renderView( 
+            view="menus/providers/submenu/admin", 
+            module="contentbox-admin",
+            args = viewArgs
         );
     }
     /**
      * Retrieves template for use in rendering menu item on the site
      * @menuItem.hint The menu item object
-     * @args.hint Additional arguments to be used in the method
+     * @options.hint Additional arguments to be used in the method
      */ 
-    public string function getDisplayTemplate( required any menuItem, required struct args={} ) {
+    public string function getDisplayTemplate( required any menuItem, required struct options={} ) {
         //#cb.menu( slug="yet-another-menu", type="html" )#
         var viewArgs = {
             menuItem=arguments.menuItem,
             data = arguments.menuItem.getMemento(),
-            slugCache = arguments.args.slugCache
+            slugCache = arguments.options.slugCache
         };
-        return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/submenu/display", 
-            module="contentbox",
+        return renderer.get().renderView( 
+            view="menus/providers/submenu/display", 
+            module="contentbox-admin",
             args = viewArgs
         );
     }
@@ -82,9 +85,9 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
     /**
      * Available precheck to determine display-ability of menu item
      * @menuItem.hint The menu item object
-     * @args.hint Additional arguments to be used in the method
+     * @options.hint Additional arguments to be used in the method
      */
-    public boolean function canDisplay( required any menuItem, required struct args ) {
+    public boolean function canDisplay( required any menuItem, required struct options ) {
         var slug = menuItem.getMenuSlug();
         return !arrayFindNoCase( args.slugCache, slug ) ? true : false;
     }
