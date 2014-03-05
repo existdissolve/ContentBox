@@ -93,7 +93,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
      * @menuItem.hint The menu item object
      * @options.hint Additional arguments to be used in the method
      */
-    public boolean function canDisplay( required any menuItem, required struct options ) {
+    public boolean function canDisplay( required any menuItem, required struct options={} ) {
         var content = contentService.findBySlug( arguments.menuItem.getContentSlug() );
         return content.isLoaded() && ( content.isPage() || content.isEntry() ) ? true : false;
     }

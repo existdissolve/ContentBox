@@ -69,7 +69,6 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
      * @options.hint Additional arguments to be used in the method
      */ 
     public string function getDisplayTemplate( required any menuItem, required struct options={} ) {
-        //#cb.menu( slug="yet-another-menu", type="html" )#
         var viewArgs = {
             menuItem=arguments.menuItem,
             data = arguments.menuItem.getMemento(),
@@ -87,7 +86,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
      * @menuItem.hint The menu item object
      * @options.hint Additional arguments to be used in the method
      */
-    public boolean function canDisplay( required any menuItem, required struct options ) {
+    public boolean function canDisplay( required any menuItem, required struct options={} ) {
         var slug = menuItem.getMenuSlug();
         return !arrayFindNoCase( args.slugCache, slug ) ? true : false;
     }
