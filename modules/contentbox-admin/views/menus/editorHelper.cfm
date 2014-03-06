@@ -135,6 +135,43 @@
                 form.submit();
             }
         }
+        /**
+         * Previews menu with serialized item data
+         */
+        function previewMenu() {
+            var form = $( '##menuForm' ),
+                nestable = $( '##nestable' ),
+                errors = 0,
+                i=0;
+            // stupid jQuery validator...can't handle duped names. let's fix that
+            nestable.find( ':input' ).each(function(){
+                $fld = $( this );
+                // if we've already transformed, just skip
+                if( $fld.attr( 'data-original-name' ) === undefined ) {
+                    $fld.attr( 'data-original-name', $fld.attr( 'name' ) );
+                    $fld.attr( 'name', $fld.attr( 'name' ) + '-' + i );
+                }
+                i++;
+            })
+            if( $( '##menuForm' ).valid() ) {
+                // prepare data
+                $( '##nestable li' ).each(function() {
+                    processItem( $( this ) );
+                });
+                // get serialized data
+                $( '##menuItems' ).val( JSON.stringify( nestable.nestable( 'serialize' ) ) );
+                $.ajax({
+                    url: '#event.buildLink( linkTo=prc.xehMenuPreview )#',
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function( data, textStatus, jqXHR ){
+                        var $modal = $( '##previewDialog' );
+                            $modal.find( '.modal-body' ).html( data );
+                        openModal( $modal, 500 );
+                    }
+                });
+            }
+        }
 
         $( document ).ready(function() {
             //****** setup listeners ********//
@@ -173,6 +210,10 @@
             // add listener to submit button
             $( '##submitMenu' ).on( 'click', function() {
                 saveMenu();
+            });
+            // add listener for preview
+            $( '##preview-button' ).on( 'click', function() {
+                previewMenu();
             });
             // add confirmation toggle
             $( '[data-toggle="confirmation"]' ).confirmation( confirmConfig );

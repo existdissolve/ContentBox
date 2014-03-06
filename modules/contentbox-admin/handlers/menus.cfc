@@ -7,6 +7,7 @@ component extends="baseHandler" {
     property name="menuService"     inject="id:menuService@cb";
     property name="menuItemService" inject="id:menuItemService@cb";
     property name="settingService" inject="id:settingService@cb";
+    property name="cb" inject="cbHelper@cb";
     
     // Public properties
     this.preHandler_except = "pager";
@@ -86,9 +87,10 @@ component extends="baseHandler" {
         
         // exit handlers
         prc.xehMenuSave   = "#prc.cbAdminEntryPoint#.menus.save";
+        prc.xehMenuPreview= "#prc.cbAdminEntryPoint#.menus.preview";
         prc.xehMenuItem   = "#prc.cbAdminEntryPoint#.menus.createMenuItem";
-        prc.xehSlugify          = "#prc.cbAdminEntryPoint#.menus.slugify";
-        prc.xehSlugCheck        = "#prc.cbAdminEntryPoint#.menus.slugUnique";
+        prc.xehSlugify    = "#prc.cbAdminEntryPoint#.menus.slugify";
+        prc.xehSlugCheck  = "#prc.cbAdminEntryPoint#.menus.slugUnique";
         // Tab
         prc.tabContent = true;
         // get registered providers
@@ -158,7 +160,7 @@ component extends="baseHandler" {
             rc.slug = getPlugin( "HTMLHelper" ).slugify( rc.title ); 
         }
         var Menu = menuService.get( id=rc.menuID );
-        var originalSlug = menu.getSlug();
+        var originalSlug = Menu.getSlug();
         // populate and get menu
         populateModel( model=Menu, exclude="menuItems" );
         // clear menu items
@@ -168,15 +170,38 @@ component extends="baseHandler" {
         // populate items from form
         Menu.populateMenuItems( rawData=deserializeJSON( rc.menuItems ) );
         // announce event
-        announceInterception( "cbadmin_preMenuSave", { menu=Menu, menuID=rc.menuID } );
+        announceInterception( "cbadmin_preMenuSave", { 
+            menu=Menu, 
+            menuID=rc.menuID 
+        });
         // save menu
         menuService.saveMenu( menu=Menu, originalSlug=originalSlug );
         // announce event
-        announceInterception( "cbadmin_postMenuSave", { menu=Menu } );
+        announceInterception( "cbadmin_postMenuSave", { 
+            menu=Menu, 
+            originalSlug=originalSlug 
+        });
         // messagebox
         getPlugin( "MessageBox" ).setMessage( "info", "Menu saved!" );
         // relocate
         setNextEvent( prc.xehMenus );
+    }
+
+    // save
+    function preview( required any event, required struct rc, required struct prc ){
+        event.paramValue( "slug", "" );
+        // slugify if not passed, and allow passed slugs to be saved as-is
+        if( !len( rc.slug ) ) { 
+            rc.slug = getPlugin( "HTMLHelper" ).slugify( rc.title ); 
+        }
+        var Menu = menuService.new();
+        var originalSlug = Menu.getSlug();
+        // populate and get menu
+        populateModel( model=Menu, exclude="menuItems" );
+        // populate items from form
+        Menu.populateMenuItems( rawData=deserializeJSON( rc.menuItems ) );
+        // render data
+        event.renderData( data=cb.buildProviderMenu( menu=Menu ), type="text" );
     }
     
     // remove

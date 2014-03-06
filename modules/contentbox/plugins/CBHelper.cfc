@@ -1029,7 +1029,7 @@ component extends="coldbox.system.Plugin" accessors="true" singleton threadSafe{
 	 * @menu.hint The root menu that should be rendered
 	 * @slugCache.hint The cache of menu slugs already used in this request
 	 */
-	private string function buildProviderMenu( required contentbox.model.menu.Menu menu, required array slugCache=[] ) {
+	public string function buildProviderMenu( required contentbox.model.menu.Menu menu, required array slugCache=[] ) {
 		var listType = arguments.menu.getListType();
 		//arguments.listType = !reFindNoCase( "^(ul|ol)$", arguments.listType ) ? "<ul>" : arguments.listType;
 		// set start

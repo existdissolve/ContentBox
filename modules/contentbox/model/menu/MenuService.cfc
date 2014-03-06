@@ -52,16 +52,7 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
         
         // Save the target menu
         save( entity=arguments.menu, transactional=false );
-
-        // Update all affected menuitems if any on slug updates
-        if( structKeyExists( arguments, "originalSlug" ) AND len( arguments.originalSlug ) ){
-            var criteria = menuItemService.newCriteria();
-            var menuItems = criteria.eq( "menuSlug", "#arguments.originalSlug#" ).list();
-            for( var item in menuItems ){
-                item.setMenuSlug( arguments.menu.getSlug() );
-                save( entity=item, transactional=false );
-            }
-        }
+        
         return this;
     }
     

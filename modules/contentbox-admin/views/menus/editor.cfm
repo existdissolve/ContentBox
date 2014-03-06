@@ -9,7 +9,8 @@
                 Menu Designer
                 <!--- Quick Actions --->
                 <div class="btn-group pull-right" style="margin-top:5px">
-                    <button class="btn btn-inverse" onclick="window.location.href='#event.buildLink( prc.xehMenus )#';return false;"><i class="icon-reply"></i> Back</button>
+                    <a class="btn btn-inverse" onclick="window.location.href='#event.buildLink( prc.xehMenus )#';return false;"><i class="icon-reply"></i> Back</a>
+                    <a class="btn" id="preview-button"><i class="icon-eye-open icon-large"></i></a>
                 </div>
             </div>
             <!--- Body --->
@@ -113,5 +114,14 @@
         </div>
     </div>
     #html.endForm()#
+</div>
+<div id="previewDialog" class="modal hide fade">
+    <div id="modalContent">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3><i class="icon-eye-open"></i> Menu Preview</h3>
+        </div>
+        <div class="modal-body"></div>
+    </div>
 </div>
 </cfoutput>
