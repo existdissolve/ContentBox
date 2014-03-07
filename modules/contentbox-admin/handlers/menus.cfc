@@ -44,7 +44,7 @@ component extends="baseHandler" {
     function filebrowser( required any event, required struct rc, required struct prc ) {
         prc.defaultEvent = "contentbox-filebrowser:home.index";
         // CKEditor callback
-        rc.callback="fbMenuItemSelect";
+        rc.callback="window.opener.fbMenuItemSelect";
         // get settings according to contentbox
         prc.cbSetting = settingService.buildFileBrowserSettings();
         // load jquery as it is standalone
