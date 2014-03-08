@@ -40,7 +40,7 @@ component extends="baseHandler" {
         // view
         event.setView( "menus/index" );
     }
-
+    // custom filebrowser "widget" for media item selections
     function filebrowser( required any event, required struct rc, required struct prc ) {
         // callback
         rc.callback="opener.fbMenuItemSelect";
@@ -239,7 +239,7 @@ component extends="baseHandler" {
         }
         
         // messagebox
-        getPlugin( "MessageBox" ).info(messageArray=messages);
+        getPlugin( "MessageBox" ).info( messageArray=messages );
         setNextEvent( prc.xehMenus );
     }
 

@@ -73,50 +73,7 @@
                     #html.endForm()#
                 </div>  
             </div>
-        </div>    
-
-        <!---
-        <!--- main sidebar --->    
-        <div class="span3" id="main-sidebar">    
-            <!--- Filter Box --->
-            <div class="small_box">
-                <div class="header">
-                    <i class="icon-filter"></i> Filters
-                </div>
-                <div class="body" id="filterBox">
-                    #html.startForm(name="contentFilterForm", action=prc.xehContentSearch)#
-                    <!--- Authors --->
-                    <label for="fAuthors">Authors: </label>
-                    <select name="fAuthors" id="fAuthors" class="input-block-level">
-                        <option value="all" selected="selected">All Authors</option>
-                        <cfloop array="#prc.authors#" index="author">
-                        <option value="#author.getAuthorID()#">#author.getName()#</option>
-                        </cfloop>
-                    </select>
-                    <!--- Categories --->
-                    <label for="fCategories">Categories: </label>
-                    <select name="fCategories" id="fCategories" class="input-block-level">
-                        <option value="all">All Categories</option>
-                        <option value="none">Uncategorized</option>
-                        <cfloop array="#prc.categories#" index="category">
-                        <option value="#category.getCategoryID()#">#category.getCategory()#</option>
-                        </cfloop>
-                    </select>
-                    <!--- Status --->
-                    <label for="fStatus">Status: </label>
-                    <select name="fStatus" id="fStatus" class="input-block-level">
-                        <option value="any">Any Status</option>
-                        <option value="true">Published</option>
-                        <option value="false">Draft</option>
-                    </select>
-        
-                    <a class="btn btn-danger" href="javascript:contentFilter()">Apply Filters</a>
-                    <a class="btn" href="javascript:resetFilter( true )">Reset</a>
-                    #html.endForm()#
-                </div>
-            </div>
-        </div>  
-        --->  
+        </div>
     </div>
     <cfif prc.oAuthor.checkPermission("MENUS_ADMIN,TOOLS_IMPORT")>
         <div id="importDialog" class="modal hide fade">

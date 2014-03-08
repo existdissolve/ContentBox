@@ -20,7 +20,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and 
 limitations under the License.
 ********************************************************************************
-* Service to handle menu operations.
+* Service to handle menu items.
 */
 component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors="true" singleton {  
     property name="providers" type="array";  
@@ -43,17 +43,27 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
         registerProvider( type="SubMenu", providerPath="contentbox.model.menu.providers.SubMenuProvider" );
         registerProvider( type="Heading", providerPath="contentbox.model.menu.providers.HeadingProvider" );
     }
-
+    /**
+     * Registers a provider with the service
+     * @type.hint The type of provider
+     * @providerPath.hint Logical path for getting instance of provider
+     */
     public MenuItemService function registerProvider( required string type, required string providerPath ) {
         variables.providers[ arguments.type ] = wirebox.getInstance( arguments.providerPath );
         return this;
     }
-
+    /**
+     * Unregisters a provider with the service
+     * @type.hint The type of provider
+     */
     public MenuItemService function unRegisterProvider( required string type ) {
         structDelete( variables.providers, arguments.type );
         return this;
     }
-
+    /**
+     * Retrieves a registered provider
+     * @type.hint The type of provider
+     */
     public any function getProvider( required string type ) {
         return variables.providers[ arguments.type ];
     }

@@ -37,8 +37,4 @@ interface {
     public string function getDisplayTemplate( required any menuItem, required struct options );
 
     public boolean function canDisplay( required any menuItem, required struct options );
-
-    public array function validate();
-
-    public boolean function isValid();    
 }

@@ -55,7 +55,7 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
     /**
      * Retrieves template for use in rendering menu item on the site
      * @menuItem.hint The menu item object
-     * @args.hint Additional arguments to be used in the method
+     * @options.hint Additional arguments to be used in the method
      */ 
     public string function getDisplayTemplate( required any menuItem, required struct options={} ) {
         var viewArgs = {

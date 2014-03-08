@@ -24,9 +24,7 @@
                     </cfloop>
                 </div>
                 <h3>Menu Sandbox</h3>
-                <p>
-                    Insert new menu items and then drag-and-drop to get them in the perfect order.
-                </p>
+                <p>Insert new menu items and then drag-and-drop to get them in the perfect order.</p>
                 <div class="designer well well-small">
                     <div class="dd" id="nestable">
                         <ol class="dd-list">

@@ -61,24 +61,9 @@ component accessors=true {
     /**
      * Available precheck to determine display-ability of menu item
      * @menuItem.hint The menu item object
-     * @args.hint Additional arguments to be used in the method
+     * @options.hint Additional arguments to be used in the method
      */
     public boolean function canDisplay( required any menuItem, required struct options={} ) {
         return true;
-    }
-
-    /**
-     * Custom validator for this menu item provider...any rules can be applied
-     */
-    public array function validate() {
-        var errors = [];
-        return errors;
-    }
-
-    /**
-     * Determines if menu item provider is valid based on validation criteria
-     */
-    public boolean function isValid() {
-        return !arrayLen( validate() );
     }
 }

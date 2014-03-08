@@ -13,7 +13,7 @@ component extends="contentbox.model.ui.BaseWidget" singleton {
         setPluginDescription( "A widget that can render out a ContentBox menu anywhere you like." );
         setPluginAuthor( "Ortus Solutions" );
         setPluginAuthorURL( "http://www.ortussolutions.com" );
-        setIcon( "page-add.png" );
+        setIcon( "list.png" );
         setCategory( "Content" );
         return this;
     }
@@ -34,8 +34,6 @@ component extends="contentbox.model.ui.BaseWidget" singleton {
                 }
             }
             catch( any e ) {
-                writedump( var=e, top=2 );
-                abort;
                 return arguments.defaultValue;
             }
             return menuContent;            

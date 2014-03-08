@@ -43,16 +43,13 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
     * @originalSlug.hint If an original slug is passed, then we need to update hierarchy slugs.
     */
     function saveMenu( required any menu, string originalSlug="" ) transactional{
-
         // Verify uniqueness of slug
         if( !isSlugUnique( slug=arguments.menu.getSlug(), menuID=arguments.menu.getMenuID() ) ){
             // make slug unique
             arguments.menu.setSlug( getUniqueSlugHash( arguments.menu.getSlug() ) );
         }
-        
         // Save the target menu
         save( entity=arguments.menu, transactional=false );
-        
         return this;
     }
     
@@ -146,7 +143,6 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
         if( isStruct( arguments.importData ) ){
             arguments.importData = [ arguments.importData ];
         }
-        
         // iterate and import
         for( var menu in arguments.importData ){
             // Get new or persisted
@@ -187,13 +183,12 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
     }
 
     /**
-    * Creates a menu item that can be used in the drag-n-drop admin
-    * @menu {Array} the menu to parse
-    * @menuString {String} build-up string for menu content
-    * @inChild {Boolean} flag for whether the content item is being evaluated as itself, or as a child of another item
-    * returns {String} the built out menu
+    * Builds editable menu for interface
+    * @menu.hint the menu to parse
+    * @menuString.hint build-up string for menu content
+    * @inChild.hint flag for whether the content item is being evaluated as itself, or as a child of another item
     */
-    public String function buildEditableMenu( required Array menu, required String menuString="", inChild=false ) {
+    public String function buildEditableMenu( required array menu, required string menuString="", boolean inChild=false ) {
         // loop over menu items
         for( var item in arguments.menu ) {
             var skipItem = false;
@@ -244,7 +239,7 @@ component extends="coldbox.system.orm.hibernate.VirtualEntityService" accessors=
 
     /**
     * Get a unique slug hash
-    * @slug.hint The slug to unique it
+    * @slug.hint The slug to make unique
     */
     private function getUniqueSlugHash( required string slug ){
         return "#arguments.slug#-#lcase( left( hash( now() ), 5 ) )#";

@@ -6,6 +6,7 @@
                 <th id="checkboxHolder" class="{sorter:false}" width="20"><input type="checkbox" onClick="checkAll(this.checked,'contentID')"/></th>
                 <th>Name</th>
                 <th>Slug</th>
+                <th width="100" class="center">No. Children</th>
                 <th width="100" class="center {sorter:false}">Actions</th>
             </tr>
         </thead>
@@ -25,6 +26,7 @@
                     </cfif>
                 </td>
                 <td>#menu.getSlug()#</td>
+                <td class="center">#arrayLen( menu.getMenuItems() )#</td>
                 <td class="center">
                     <div class="btn-group">
                         <a class="btn dropdown-toggle" data-toggle="dropdown" href="##" title="Menu Actions">

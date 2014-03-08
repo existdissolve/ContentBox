@@ -1,3 +1,27 @@
+/**
+********************************************************************************
+ContentBox - A Modular Content Platform
+Copyright 2012 by Luis Majano and Ortus Solutions, Corp
+www.gocontentbox.org | www.luismajano.com | www.ortussolutions.com
+********************************************************************************
+Apache License, Version 2.0
+
+Copyright Since [2012] [Luis Majano and Ortus Solutions,Corp]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+********************************************************************************
+* Core Menu Entity
+*/
 component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMenu" cacheuse="read-write" {
     // DI Injections
     property name="menuService" inject="menuService@cb" persistent="false";
@@ -11,7 +35,7 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
     property name="listType" ormtype="string" length="20" default="ul";
     property name="createdDate" ormtype="timestamp" notnull="true" update="false";
     // O2M -> Comments
-    property name="menuItems" singularName="menuItem" fieldtype="one-to-many" type="array" cfc="contentbox.model.menu.item.BaseMenuItem" fkcolumn="FK_menuID" cascade="all-delete-orphan" inverse="true";
+    property name="menuItems" singularName="menuItem" fieldtype="one-to-many" type="array" cfc="contentbox.model.menu.item.BaseMenuItem" fkcolumn="FK_menuID" cascade="all-delete-orphan" inverse="true" lazy="extra"; 
 
     /************************************** CONSTRUCTOR *********************************************/
 
@@ -72,7 +96,7 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
         // loop over rawData and create items :)
         for( var data in arguments.rawData ) {
             var provider = menuItemService.getProvider( data.menuType );
-            var entity = ORMService.get( entityName=provider.getEntityName(), id=0 );//entityNew( provider.getEntityName() );
+            var entity = ORMService.get( entityName=provider.getEntityName(), id=0 );
             var newItem = menuItemService.populate( target=entity, memento=data, exclude="children" );
                 newItem.setMenu( this );
             if( structKeyExists( data, "children" ) && isArray( data.children ) ) {

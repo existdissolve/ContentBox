@@ -1,5 +1,5 @@
 <cfoutput>
-    <cfset udfName = "udf#args.menuItem.getMenuItemID()#">
+    <cfset udfName = "udf#args.menuItem.getMenuItemID()#_#getTickCount()#">
     <script>
         function #udfName#Callback() {
             (#args.menuItem.getJS()#).call();

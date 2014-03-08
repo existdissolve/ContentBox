@@ -36,7 +36,10 @@
             //disable input field
             $slug.prop( "disabled", !$slug.prop( 'disabled' ) );
         }
-
+        /**
+         * Checks slug for uniqueness
+         * @param {String} linkToUse The link to use for validating the slug
+         */
         function slugUniqueCheck( linkToUse ){
             var $slug = $( '##slug' ),
                 linkToUse = ( typeof linkToUse === "undefined" ) ? $slug.val() : linkToUse;

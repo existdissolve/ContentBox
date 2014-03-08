@@ -10,6 +10,10 @@ component extends="coldbox.system.Interceptor"{
     */
     function configure(){}
 
+    /**
+     * Fires after the save of a page
+     * Will cleanup any slug changes for menus
+     */
     public void function cbadmin_postPageSave( required any event, required struct interceptData ) async="true" {
         var criteria = menuItemService.newCriteria();
         var menuItemsInNeed = criteria.eq( "contentSlug", "#arguments.interceptData.originalSlug#" ).list();
@@ -18,7 +22,10 @@ component extends="coldbox.system.Interceptor"{
             menuItemService.save( entity=menuItem );
         }
     }
-
+    /**
+     * Fires after the save of an entry
+     * Will cleanup any slug changes for menus
+     */
     public void function cbadmin_postEntrySave( required any event, required struct interceptData ) async="true" {
         var criteria = menuItemService.newCriteria();
         var menuItemsInNeed = criteria.eq( "contentSlug", "#arguments.interceptData.originalSlug#" ).list();
@@ -27,7 +34,10 @@ component extends="coldbox.system.Interceptor"{
             menuItemService.save( entity=menuItem );
         }
     }
-
+    /**
+     * Fires after the save of a menu
+     * Will cleanup any slug changes for child menus
+     */
     public void function cbadmin_postMenuSave( required any event, required struct interceptData ) async="true" {
         // Update all affected menuitems if any on slug updates
         var criteria = menuItemService.newCriteria();
@@ -37,7 +47,10 @@ component extends="coldbox.system.Interceptor"{
             menuItemService.save( entity=item  );
         }
     }
-
+    /**
+     * Fires after the rename of a media item
+     * Will cleanup any name changes for menus
+     */
     public void function fb_postFileRename( required any event, required struct interceptData ) async="true" {
         var rc = event.getCollection();
         // make sure we have settings
