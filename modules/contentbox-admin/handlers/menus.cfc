@@ -42,16 +42,15 @@ component extends="baseHandler" {
     }
 
     function filebrowser( required any event, required struct rc, required struct prc ) {
-        prc.defaultEvent = "contentbox-filebrowser:home.index";
-        // CKEditor callback
-        rc.callback="window.opener.fbMenuItemSelect";
+        // callback
+        rc.callback="opener.fbMenuItemSelect";
         // get settings according to contentbox
         prc.cbSetting = settingService.buildFileBrowserSettings();
         // load jquery as it is standalone
         prc.cbSetting.loadJQuery = true;
 
         var args = { widget=true, settings=prc.cbSetting };
-        return runEvent( event=prc.defaultEvent, eventArguments=args );
+        return runEvent( event="contentbox-filebrowser:home.index", eventArguments=args );
     }
 
     // slugify remotely
