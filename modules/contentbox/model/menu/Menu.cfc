@@ -99,6 +99,7 @@ component persistent="true" entityName="cbMenu" table="cb_menu" cachename="cbMen
             var entity = ORMService.get( entityName=provider.getEntityName(), id=0 );
             var newItem = menuItemService.populate( target=entity, memento=data, exclude="children" );
                 newItem.setMenu( this );
+                newItem.setActive( true );
             if( structKeyExists( data, "children" ) && isArray( data.children ) ) {
                 var children = createMenuItems( data.children );
                 var setter = [];

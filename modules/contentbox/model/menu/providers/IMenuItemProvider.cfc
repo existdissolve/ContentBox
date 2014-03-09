@@ -35,6 +35,4 @@ interface {
     public string function getAdminTemplate( required any menuItem, required struct options );
 
     public string function getDisplayTemplate( required any menuItem, required struct options );
-
-    public boolean function canDisplay( required any menuItem, required struct options );
 }

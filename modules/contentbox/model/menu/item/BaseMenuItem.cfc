@@ -31,6 +31,7 @@ component persistent="true" entityName="cbMenuItem" table="cb_menuItem" cachenam
     property name="label"   notnull="false" ormtype="string" length="200" default="";
     property name="cls"     notnull="false" ormtype="string" length="200" default="";
     property name="data"    notnull="false" ormtype="string" default="";
+    property name="active"  ormtype="boolean" default="1";
     property name="menuType" insert="false" update="false";
     // M20 - Owning menu
     property name="menu" cfc="contentbox.model.menu.Menu" fieldtype="many-to-one" fkcolumn="FK_menuID" lazy="true" fetch="join" notnull="true";
@@ -113,5 +114,13 @@ component persistent="true" entityName="cbMenuItem" table="cb_menuItem" cachenam
             }
         }
         return str;
+    }
+
+    /**
+     * Available precheck to determine display-ability of menu item
+     * @options.hint Additional arguments to be used in the method
+     */
+    public boolean function canDisplay( required struct options={} ) {
+        return getActive();
     }
 }

@@ -80,14 +80,4 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
             args = viewArgs
         );
     }
-
-    /**
-     * Available precheck to determine display-ability of menu item
-     * @menuItem.hint The menu item object
-     * @options.hint Additional arguments to be used in the method
-     */
-    public boolean function canDisplay( required any menuItem, required struct options={} ) {
-        var slug = menuItem.getMenuSlug();
-        return !arrayFindNoCase( args.slugCache, slug ) ? true : false;
-    }
 }

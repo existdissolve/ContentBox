@@ -55,9 +55,9 @@ component implements="contentbox.model.menu.providers.IMenuItemProvider" extends
             menuItem=arguments.menuItem,
             data = arguments.menuItem.getMemento()
         };
-        return renderer.get().renderExternalView( 
-            view="contentbox/model/menu/providers/heading/display", 
-            module="contentbox",
+        return renderer.get().renderView( 
+            view="menus/providers/heading/display", 
+            module="contentbox-admin",
             args = viewArgs
         );
     }

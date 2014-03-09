@@ -1,6 +1,7 @@
 <cfoutput>
     <a class="dd-handle dd3-handle btn" title="Drag to reorder"><i class="icon-move icon-large"></i></a>
-    <a class="dd3-type btn btn-info" title="#args.provider.getDescription()#"><i class="#args.provider.getIconCls()#"></i></a>
+    <cfset btnCls = !args.menuItem.getActive() ? "btn-danger" : "btn-inverse">
+    <a class="dd3-type btn #btnCls#" title="#args.provider.getDescription()#"><i class="#args.provider.getIconCls()#"></i></a>
     <div class="dd3-content double" data-toggle="context" data-target="##context-menu">#args.menuItem.getLabel()#</div>
     <div class="dd3-extracontent" style="display:none;">
         <!--- id --->

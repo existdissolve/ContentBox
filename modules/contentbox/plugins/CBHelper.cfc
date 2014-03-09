@@ -1061,7 +1061,7 @@ component extends="coldbox.system.Plugin" accessors="true" singleton threadSafe{
 		for( var item in arguments.items ) {
 			var extras = { slugCache=arguments.slugCache, listType=arguments.listType };
 			// check that item can be added
-			if( item.getProvider().canDisplay( menuItem=item, args=extras ) ) {
+			if( item.canDisplay( options=extras ) ) {
 				// get template from provider
 				menuString &= '<li #item.getAttributesAsString()#>' & item.getProvider().getDisplayTemplate( item, extras );
 				// if this menu item has children...

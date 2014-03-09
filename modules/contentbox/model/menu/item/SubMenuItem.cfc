@@ -37,4 +37,17 @@ component persistent="true" entityName="cbSubMenuItem" table="cb_menuItem" exten
         result[ "menuSlug" ] = getMenuSlug();
         return result;
     }
+
+    /**
+     * Available precheck to determine display-ability of menu item
+     * @options.hint Additional arguments to be used in the method
+     */
+    public boolean function canDisplay( required struct options={} ) {
+        var display = super.canDisplay( argumentCollection=arguments );
+        if( display ) {
+            var slug = getMenuSlug();
+            return !arrayFindNoCase( options.slugCache, slug ) ? true : false;
+        }
+        return display;    
+    }
 }

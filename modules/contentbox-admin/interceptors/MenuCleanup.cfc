@@ -23,6 +23,19 @@ component extends="coldbox.system.Interceptor"{
         }
     }
     /**
+     * Fires before deletion of a page
+     * Will cleanup any slug changes for menus
+     */
+    public void function cbadmin_prePageRemove( required any event, required struct interceptData ) async="true" {
+        var criteria = menuItemService.newCriteria();
+        var menuItemsInNeed = criteria.eq( "contentSlug", "#arguments.interceptData.page.getSlug()#" ).list();
+        for( var menuItem in menuItemsInNeed ){
+            menuItem.setContentSlug( JavaCast( "null", "" ) );
+            menuItem.setActive( false );
+            menuItemService.save( entity=menuItem );
+        }
+    }
+    /**
      * Fires after the save of an entry
      * Will cleanup any slug changes for menus
      */
@@ -31,6 +44,19 @@ component extends="coldbox.system.Interceptor"{
         var menuItemsInNeed = criteria.eq( "contentSlug", "#arguments.interceptData.originalSlug#" ).list();
         for( var menuItem in menuItemsInNeed ){
             menuItem.setContentSlug( arguments.interceptData.entry.getSlug() );
+            menuItemService.save( entity=menuItem );
+        }
+    }
+    /**
+     * Fires before deletion of an entry
+     * Will cleanup any slug changes for menus
+     */
+    public void function cbadmin_preEntryRemove( required any event, required struct interceptData ) async="true" {
+        var criteria = menuItemService.newCriteria();
+        var menuItemsInNeed = criteria.eq( "contentSlug", "#arguments.interceptData.entry.getSlug()#" ).list();
+        for( var menuItem in menuItemsInNeed ){
+            menuItem.setContentSlug( JavaCast( "null", "" ) );
+            menuItem.setActive( false );
             menuItemService.save( entity=menuItem );
         }
     }
@@ -45,6 +71,19 @@ component extends="coldbox.system.Interceptor"{
         for( var item in menuItems ){
             item.setMenuSlug( arguments.interceptData.menu.getSlug() );
             menuItemService.save( entity=item  );
+        }
+    }
+    /**
+     * Fires before deletion of a menu
+     * Will cleanup any slug changes for menus
+     */
+    public void function cbadmin_preMenuRemove( required any event, required struct interceptData ) async="true" {
+        var criteria = menuItemService.newCriteria();
+        var menuItemsInNeed = criteria.eq( "contentSlug", "#arguments.interceptData.menu.getSlug()#" ).list();
+        for( var menuItem in menuItemsInNeed ){
+            menuItem.setContentSlug( JavaCast( "null", "" ) );
+            menuItem.setActive( false );
+            menuItemService.save( entity=menuItem );
         }
     }
     /**
@@ -67,6 +106,18 @@ component extends="coldbox.system.Interceptor"{
                 item.setMediaPath( settings.mediaPath & "/" & arguments.interceptData.newName );
                 menuItemService.save( entity=item  );
             }
+        }
+    }
+    /**
+     * Fires before deletion of a file
+     */
+    public void function fb_preFileRemoval( required any event, required struct interceptData ) async="true" {
+        var criteria = menuItemService.newCriteria();
+        var menuItemsInNeed = criteria.eq( "mediaPath", "#arguments.interceptData.path#" ).list();
+        for( var menuItem in menuItemsInNeed ){
+            menuItem.setMediaPath( JavaCast( "null", "" ) );
+            menuItem.setActive( false );
+            menuItemService.save( entity=menuItem );
         }
     }    
 }

@@ -27,6 +27,7 @@ component persistent="true" entityName="cbContentMenuItem" table="cb_menuItem" e
     property name="contentSlug" notnull="false" ormtype="string" default="";
     // di 
     property name="provider" persistent="false" inject="contentbox.model.menu.providers.ContentProvider";
+    property name="contentService" inject="id:contentService@cb";
 
     /**
      * Get a flat representation of this menu item
@@ -36,5 +37,18 @@ component persistent="true" entityName="cbContentMenuItem" table="cb_menuItem" e
         // add our subclasses's properties
         result[ "contentSlug" ] = getContentSlug();
         return result;
+    }
+
+    /**
+     * Available precheck to determine display-ability of menu item
+     * @options.hint Additional arguments to be used in the method
+     */
+    public boolean function canDisplay( required struct options={} ) {
+        var display = super.canDisplay( argumentCollection=arguments );
+        if( display ) {
+            var content = contentService.findBySlug( getContentSlug() );
+            return content.isLoaded() && ( content.isPage() || content.isEntry() ) ? true : false;
+        }
+        return display;        
     }
 }
