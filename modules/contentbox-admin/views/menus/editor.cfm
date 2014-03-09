@@ -17,14 +17,19 @@
             <div class="body">
                 <!--- MessageBox --->
                 #getPlugin( "MessageBox" ).renderit()#
-                <div class="well well-small">
+                <menu class="well well-small">
                     <p>Click any of the options below to insert a new menu item of that type.</p>
                     <cfloop collection="#prc.providers#" item="provider">
                         <a class="btn btn-small provider btn-info" data-provider="#provider#"><span style="display:inline-block;" title="#prc.providers[ provider].getDescription()#"><i class="#prc.providers[ provider].getIconCls()#"></i> #provider#</span></a>
                     </cfloop>
-                </div>
+                    <a class="btn btn-small pull-right" data-action="collapse-all"><span style="display:inline-block;" title="Collapse All"><i class="icon-minus"></i> Collapse All</span></a>
+                    <a class="btn btn-small pull-right" data-action="expand-all" style="margin-right:4px;"><span style="display:inline-block;" title="Expand All"><i class="icon-plus"></i> Expand All</span></a>
+                </menu>
                 <h3>Menu Sandbox</h3>
                 <p>Insert new menu items and then drag-and-drop to get them in the perfect order.</p>
+                <div class="alert alert-error" id="menuErrors" style="display:none;">
+                    Uh oh, looks like one (or more) of your menu items is incomplete. Please complete all items and then try again.
+                </div>
                 <div class="designer well well-small">
                     <div class="dd" id="nestable">
                         <ol class="dd-list">

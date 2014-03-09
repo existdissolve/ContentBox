@@ -27,7 +27,7 @@ component persistent="true" entityName="cbContentMenuItem" table="cb_menuItem" e
     property name="contentSlug" notnull="false" ormtype="string" default="";
     // di 
     property name="provider" persistent="false" inject="contentbox.model.menu.providers.ContentProvider";
-    property name="contentService" inject="id:contentService@cb";
+    property name="contentService" persistent="false" inject="id:contentService@cb";
 
     /**
      * Get a flat representation of this menu item

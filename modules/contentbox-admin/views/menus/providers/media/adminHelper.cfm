@@ -22,10 +22,10 @@
          * @param {String} sType
          */
         function fbMenuItemSelect( sPath, sURL, sType ) {
-            var fileParts = sPath.split( '/' ),
+            var fileParts = sURL.split( '/' ),
                 fileName = fileParts[ fileParts.length-1 ];
             input.val( fileName );
-            hidden.val( sPath );
+            hidden.val( sURL );
             label.val( fileName );
             updateLabel( label );
             typeIcon.removeClass( 'btn-danger' ).addClass( 'btn-info' );

@@ -111,15 +111,36 @@
             }
         }
         /**
-         * Saves menu with serialized item data
+         * Toggles error states on menu items
+         * @param {String} dir The direction (on/off)
          */
-        function saveMenu() {
-            var form = $( '##menuForm' ),
-                nestable = $( '##nestable' ),
-                errors = 0,
-                i=0;
+        function toggleErrors( dir ) {
+            var $nestable = $( '##nestable' ),
+                $errors = $( '##menuErrors' );
+            switch( dir ) {
+                case 'on':
+                    // highlight errors
+                    $nestable .find( 'div.error' ).each(function() {
+                        $( this ).closest( '.dd3-item' ).children( '.dd3-type' ).removeClass( 'btn-inverse' ).addClass( 'btn-danger' );
+                    });
+                    // expand so we can see nested errors
+                    $( '.dd' ).nestable( 'expandAll' );
+                    $errors.show();
+                    break;
+                case 'off':
+                    // remove error highlights
+                    $nestable .find( '.dd3-type' ).each(function() {
+                        $( this ).removeClass( 'btn-danger' ).addClass( 'btn-inverse' );
+                    });
+                    $errors.hide();
+                    break; 
+            }
+        }
+        function transformFieldNames() {
+            var $nestable = $( '##nestable' ),
+                i =0;
             // stupid jQuery validator...can't handle duped names. let's fix that
-            nestable.find( ':input' ).each(function(){
+            $nestable .find( ':input' ).each(function(){
                 $fld = $( this );
                 // if we've already transformed, just skip
                 if( $fld.attr( 'data-original-name' ) === undefined ) {
@@ -128,14 +149,29 @@
                 }
                 i++;
             })
+        }
+        /**
+         * Saves menu with serialized item data
+         */
+        function saveMenu() {
+            var form = $( '##menuForm' ),
+                nestable = $( '##nestable' );
+            // transform fields
+            transformFieldNames();
+            // if valid, submit form
             if( $( '##menuForm' ).valid() ) {
+                toggleErrors( 'off' );
                 // prepare data
                 $( '##nestable li' ).each(function() {
                     processItem( $( this ) );
                 });
                 // get serialized data
+                $( '##submitMenu' ).attr( 'disabled', true ).html( '<i class="icon-spinner icon-spin"></i> Saving...' );
                 $( '##menuItems' ).val( JSON.stringify( nestable.nestable( 'serialize' ) ) );
                 form.submit();
+            }
+            else {
+                toggleErrors( 'on' );
             }
         }
         /**
@@ -143,20 +179,12 @@
          */
         function previewMenu() {
             var form = $( '##menuForm' ),
-                nestable = $( '##nestable' ),
-                errors = 0,
-                i=0;
-            // stupid jQuery validator...can't handle duped names. let's fix that
-            nestable.find( ':input' ).each(function(){
-                $fld = $( this );
-                // if we've already transformed, just skip
-                if( $fld.attr( 'data-original-name' ) === undefined ) {
-                    $fld.attr( 'data-original-name', $fld.attr( 'name' ) );
-                    $fld.attr( 'name', $fld.attr( 'name' ) + '-' + i );
-                }
-                i++;
-            })
+                nestable = $( '##nestable' );
+            // transform fields
+            transformFieldNames();
+            // if valid, preview
             if( $( '##menuForm' ).valid() ) {
+                toggleErrors( 'off' );
                 // prepare data
                 $( '##nestable li' ).each(function() {
                     processItem( $( this ) );
@@ -173,6 +201,9 @@
                         openModal( $modal, 500 );
                     }
                 });
+            }
+            else {
+                toggleErrors( 'on' );
             }
         }
 
@@ -212,6 +243,9 @@
             });
             // add listener to submit button
             $( '##submitMenu' ).on( 'click', function() {
+                if( $( this ).attr( 'disabled' ) ) {
+                    return false;
+                }
                 saveMenu();
             });
             // add listener for preview
@@ -245,6 +279,18 @@
                     }
                 })
             });
+            // toggle buttons
+            $( 'a[data-action]' ).on( 'click', function() {
+                var $button = $( this );
+                switch( $button.data( 'action' ) ) {
+                    case 'expand-all':
+                        $( '.dd' ).nestable( 'expandAll' );
+                        break;
+                    case 'collapse-all':
+                        $( '.dd' ).nestable( 'collapseAll' );
+                        break;
+                }
+            })
             // Activate blur slugify on titles
 
             // set up live event for title, do nothing if slug is locked..
@@ -260,7 +306,7 @@
                 }
             });
             //******** setup nestable menu items **************//
-            $( '##nestable' ).nestable();
+            $( '##nestable' ).nestable({});
         });
     </script>
 </cfoutput>
