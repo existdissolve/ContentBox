@@ -26,7 +26,7 @@ component extends="coldbox.system.Interceptor"{
      * Fires before deletion of a page
      * Will cleanup any slug changes for menus
      */
-    public void function cbadmin_prePageRemove( required any event, required struct interceptData ) async="true" {
+    public void function cbadmin_prePageRemove( required any event, required struct interceptData ) {
         var criteria = menuItemService.newCriteria();
         var menuItemsInNeed = criteria.eq( "contentSlug", "#arguments.interceptData.page.getSlug()#" ).list();
         for( var menuItem in menuItemsInNeed ){
@@ -51,7 +51,7 @@ component extends="coldbox.system.Interceptor"{
      * Fires before deletion of an entry
      * Will cleanup any slug changes for menus
      */
-    public void function cbadmin_preEntryRemove( required any event, required struct interceptData ) async="true" {
+    public void function cbadmin_preEntryRemove( required any event, required struct interceptData ) {
         var criteria = menuItemService.newCriteria();
         var menuItemsInNeed = criteria.eq( "contentSlug", "#arguments.interceptData.entry.getSlug()#" ).list();
         for( var menuItem in menuItemsInNeed ){
@@ -77,11 +77,11 @@ component extends="coldbox.system.Interceptor"{
      * Fires before deletion of a menu
      * Will cleanup any slug changes for menus
      */
-    public void function cbadmin_preMenuRemove( required any event, required struct interceptData ) async="true" {
+    public void function cbadmin_preMenuRemove( required any event, required struct interceptData ) {
         var criteria = menuItemService.newCriteria();
-        var menuItemsInNeed = criteria.eq( "contentSlug", "#arguments.interceptData.menu.getSlug()#" ).list();
+        var menuItemsInNeed = criteria.eq( "menuSlug", "#arguments.interceptData.menu.getSlug()#" ).list();
         for( var menuItem in menuItemsInNeed ){
-            menuItem.setContentSlug( JavaCast( "null", "" ) );
+            menuItem.setMenuSlug( JavaCast( "null", "" ) );
             menuItem.setActive( false );
             menuItemService.save( entity=menuItem );
         }

@@ -110,5 +110,40 @@ function contentLoad( criteria ){
         $( this ).fadeIn( 'fast' );
     });
 }
+// Remove menu
+function remove( menuID, id ){
+    id = typeof id !== 'undefined' ? id : 'menuID';
+    if( menuID != null ){
+        $( "##delete_" + menuID ).removeClass( "icon-remove-sign" ).addClass( "icon-spinner icon-spin" );
+        checkByValue( id, menuID );      
+    }
+    $contentForm.submit();
+}
+// Bulk Remove
+function bulkRemove(){
+    $contentForm.submit();
+}
+// Import content dialogs
+function importContent(){
+    var $importForm = $importDialog.find("##importForm");
+    // open modal for cloning options
+    openModal( $importDialog, 500, 350 );
+    // form validator and data
+    $importForm.validate({ 
+        submitHandler: function(form){
+            $importForm.find( "##importButtonBar" ).slideUp();
+            $importForm.find( "##importBarLoader" ).slideDown();
+            form.submit();
+        }
+    });
+    // close button
+    $importForm.find( "##closeButton" ).click(function(e){
+        closeModal( $importDialog ); return false;
+    });
+    // clone button
+    $importForm.find( "##importButton" ).click(function(e){
+        $importForm.submit();
+    });
+}
 </script>
 </cfoutput>

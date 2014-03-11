@@ -57,4 +57,11 @@ component accessors=true {
     public string function getIconCls() {
         return iconCls;
     }
+
+    /**
+     * Gets the description of the menu item provider
+     */
+    public string function getDescription() {
+        return description;
+    }
 }
